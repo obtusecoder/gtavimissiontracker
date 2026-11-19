@@ -6,13 +6,15 @@ A free single-page checklist for GTA VI: every story mission, optional mission a
 
 ## Features
 
-- **Spoiler-free mode** (on by default): mission names, chapter names and hidden trophies stay hidden until you reach them. "Show next" or "Show all" reveals them early.
+- **Spoiler-free mode** (on by default): mission names, chapter names, side missions and hidden trophies stay hidden until you reach them. "Show next" or "Show all" reveals them early.
 - **Missable warnings**: reminds you of missable missions while you can still do them.
 - **Jason / Lucia filter**: shows the missions for one character.
 - **Notes**: add your own note to any mission.
 - **Trophies & Collectibles**: all 55 trophies, plus counters for every collectible type with a "for 100%" progress bar.
 - **Backup & restore**: copy a backup code to keep your progress safe or move it to another device or browser.
-- Each feature can be switched off in **Settings**. Settings and progress are saved in your browser, so everyone who visits keeps their own.
+- **Dark or light theme** (dark by default).
+- Each feature can be switched off on the **Settings** page. Settings and progress are saved in your browser, so everyone who visits keeps their own.
+- Pages have their own links: `#missions`, `#trophies` and `#options` (Settings).
 
 > **Accuracy:** the list was built from community guides published in GTA VI's launch week (November 2026). Guides disagree on some details, so it may not be 100% accurate. It's checked against the latest guides weekly.
 

@@ -50,16 +50,19 @@ header .wrap{padding-block:16px 12px;display:grid;gap:12px}
 .top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
 .top-right{display:flex;gap:10px;align-items:center}
 h1{font-family:var(--display);font-weight:400;font-size:clamp(28px,6vw,40px);letter-spacing:.01em;line-height:1;margin:0;text-transform:uppercase}
+h1 .home{font:inherit;color:inherit;background:none;border:0;padding:0;margin:0;cursor:pointer;text-transform:inherit;letter-spacing:inherit;line-height:inherit;text-align:left}
 h1 span{background:linear-gradient(90deg,var(--sun),var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent}
 .status{font-family:var(--mono);font-size:12px;color:var(--muted)}
 .btn{font:inherit;font-size:13px;font-weight:600;padding:6px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);cursor:pointer}
 .btn:hover{border-color:var(--muted)}
 .btn.primary{background:var(--pink);border-color:var(--pink);color:#fff}
 .btn.small{font-size:12px;padding:3px 9px}
-.btn[aria-expanded="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.btn[aria-current="page"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.panel .seg{width:fit-content}
+.view-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
 .tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:-12px}
 .tabs button{font:inherit;font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:.06em;padding:8px 12px;border:0;border-bottom:3px solid transparent;background:none;color:var(--muted);cursor:pointer}
-.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--pink)}
+.tabs button[aria-current="page"]{color:var(--ink);border-bottom-color:var(--pink)}
 .bars{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media (max-width:520px){.bars{grid-template-columns:1fr}}
 .bar-label{display:flex;justify-content:space-between;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600;margin-bottom:5px}
@@ -244,21 +247,30 @@ try{state=normalize(JSON.parse(document.getElementById("state").textContent));}c
 var LS="gta6-tracker-v1", LSUI=LS+"-ui", LSSET="gta6-tracker-settings";
 function lsGet(k){try{return JSON.parse(localStorage.getItem(k)||"null");}catch(e){return null;}}
 function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
-var DEF={spoilers:true,missables:true,notes:true,character:true,extras:true};
+var DEF={theme:"dark",spoilers:true,missables:true,notes:true,character:true,extras:true};
 var set=Object.assign({},DEF,lsGet(LSSET)||{});
-var ui=Object.assign({filter:"all",who:"all",hideDone:false,closed:{},tab:"missions"},lsGet(LSUI)||{});
-ui.q="";ui.editing=null;ui.settingsOpen=false;
+var ui=Object.assign({filter:"all",who:"all",hideDone:false,closed:{}},lsGet(LSUI)||{});
+ui.q="";ui.editing=null;
+delete ui.tab;
 var peek={}, peekCh={}, peekTr={};
 var pub=null, pubTimer=null, statusText="";
-function saveUI(){lsSet(LSUI,{filter:ui.filter,who:ui.who,hideDone:ui.hideDone,closed:ui.closed,tab:ui.tab});}
+function saveUI(){lsSet(LSUI,{filter:ui.filter,who:ui.who,hideDone:ui.hideDone,closed:ui.closed});}
+function applyTheme(){document.documentElement.setAttribute("data-theme",set.theme==="light"?"light":"dark");}
+applyTheme();
+// Pages: #missions (default), #trophies, #options. Plain hash names so links and the back button work.
+function view(){var h=location.hash.slice(1);if(h==="options")return"options";if(h==="trophies"&&set.extras)return"trophies";return"missions";}
+function go(v){if(view()!==v||location.hash.slice(1)!==v)location.hash=v;}
+// Ask password managers (Bitwarden, LastPass, 1Password, Dashlane) to leave these fields alone
+var PM=' autocomplete="off" data-bwignore="true" data-lpignore="true" data-1p-ignore="true" data-form-type="other"';
 function saveSet(){lsSet(LSSET,set);}
 function esc(t){return String(t).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
 function norm(t){return String(t).toLowerCase().replace(/[^a-z0-9 ]+/g,"").replace(/\s+/g," ");}
 
 // ---------- SPOILER LOGIC ----------
 // Revealed: everything up to your furthest ticked mission, plus up to and including the next story mission.
+var FAR=-1;
 function limit(){
-  var far=-1;ORDER.forEach(function(m){if(state.done[m.id])far=m.idx;});
+  var far=-1;ORDER.forEach(function(m){if(state.done[m.id])far=m.idx;});FAR=far;
   var lim=far;for(var i=far+1;i<ORDER.length;i++){lim=i;if(ORDER[i].kind==="m")break;}
   return lim;
 }
@@ -267,7 +279,8 @@ function chReached(cid){return !set.spoilers||CHMAP[cid].ms[0].idx<=LIM;}
 function revealed(m){
   if(!set.spoilers||state.done[m.id]||peek[m.id]||peekCh[m.ch])return true;
   if(m.idx!==undefined)return m.idx<=LIM;
-  return chReached(m.start);
+  // Side questlines show once you've completed the first mission of the chapter they open in
+  return CHMAP[m.start].ms[0].idx<=FAR;
 }
 function chFinished(cid){var st=CHMAP[cid].ms.filter(function(m){return m.kind==="m";});return st.length&&state.done[st[st.length-1].id];}
 
@@ -275,16 +288,16 @@ function chFinished(cid){var st=CHMAP[cid].ms.filter(function(m){return m.kind==
 var app=document.getElementById("app");
 app.innerHTML=
 '<header><div class="wrap">'+
- '<div class="top"><h1>GTA VI <span>Tracker</span></h1><div class="top-right"><span class="status" id="status" aria-live="polite"></span><button class="btn" id="setBtn" aria-expanded="false" aria-controls="settings">Settings</button></div></div>'+
+ '<div class="top"><h1><button class="home" id="home" title="Refresh the tracker">GTA VI <span>Tracker</span></button></h1><div class="top-right"><span class="status" id="status" aria-live="polite"></span><button class="btn" id="setBtn">Settings</button></div></div>'+
  '<div class="bars" id="bars"></div>'+
- '<div class="tabs" role="tablist" id="tabs"><button role="tab" data-tab="missions">Missions</button><button role="tab" data-tab="extras">Trophies &amp; Collectibles</button></div>'+
+ '<nav class="tabs" id="tabs" aria-label="Pages"><button data-tab="missions">Missions</button><button data-tab="trophies">Trophies &amp; Collectibles</button></nav>'+
 '</div></header>'+
 '<main><div class="wrap body">'+
- '<div class="note" role="note"><b>Heads up:</b> this list was put together from community guides published in GTA VI\'s launch week, so it may not be 100% accurate. Guides disagree on which small objectives count as missions, some missions can appear in a different order, and side missions are still being discovered. The list is checked against the latest guides weekly. <span class="checked">Last checked: 19 Nov 2026</span></div>'+
- '<div class="panel" id="settings" hidden></div>'+
+ '<div class="note" role="note" id="disclaimer"><b>Heads up:</b> this list was put together from community guides published in GTA VI\'s launch week, so it may not be 100% accurate. Guides disagree on which small objectives count as missions, some missions can appear in a different order, and side missions are still being discovered. The list is checked against the latest guides weekly. <span class="checked">Last checked: 19 Nov 2026</span></div>'+
+ '<div class="panel" id="optionsView" hidden></div>'+
  '<div id="missionsView"><div class="controls" id="controls"></div><div id="warnings"></div><div id="list" style="display:grid;gap:22px"></div></div>'+
  '<div id="extrasView" hidden></div>'+
- '<footer><p>Story order from launch-week guides; a few side missions may appear in a different order in your game.</p></footer>'+
+ '<footer id="foot"><p>Story order from launch-week guides; a few side missions may appear in a different order in your game.</p></footer>'+
 '</div></main>';
 var $=function(id){return document.getElementById(id);};
 
@@ -303,7 +316,8 @@ function colNeed(){
 }
 function renderBars(){
   var h;
-  if(ui.tab==="extras"&&set.extras){
+  var v=view();$("bars").hidden=v==="options";if(v==="options")return;
+  if(v==="trophies"){
     var t=TR.filter(function(x){return state.trophies[x.id];}).length, c=colNeed();
     h=bar("Trophies",t,TR.length,"","Trophy progress")+bar("Collectibles for 100%",c[0],c[1],"teal","Collectible progress");
   }else{
@@ -314,11 +328,15 @@ function renderBars(){
   $("bars").innerHTML=h;
 }
 function renderTabs(){
-  $("tabs").hidden=!set.extras;
-  if(!set.extras)ui.tab="missions";
-  Array.prototype.forEach.call($("tabs").querySelectorAll("button"),function(b){b.setAttribute("aria-selected",b.dataset.tab===ui.tab);});
-  $("missionsView").hidden=ui.tab!=="missions";
-  $("extrasView").hidden=ui.tab!=="extras";
+  var v=view();
+  $("tabs").hidden=!set.extras||v==="options";
+  Array.prototype.forEach.call($("tabs").querySelectorAll("button"),function(b){if(b.dataset.tab===v)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current");});
+  $("missionsView").hidden=v!=="missions";
+  $("extrasView").hidden=v!=="trophies";
+  $("optionsView").hidden=v!=="options";
+  $("disclaimer").hidden=v==="options";
+  $("foot").hidden=v!=="missions";
+  if(v==="options")$("setBtn").setAttribute("aria-current","page");else $("setBtn").removeAttribute("aria-current");
 }
 function renderControls(){
   var h='<div class="seg" role="group" aria-label="Mission type">'+
@@ -326,7 +344,7 @@ function renderControls(){
   if(set.character)h+='<div class="seg" role="group" aria-label="Character">'+
     ['all','Anyone','Jason','Jason','Lucia','Lucia'].reduce(function(a,v,i,arr){return i%2?a:a+'<button data-w="'+v+'" aria-pressed="'+(ui.who===v)+'">'+arr[i+1]+'</button>';},"")+'</div>';
   h+='<label><input type="checkbox" id="hideDone"'+(ui.hideDone?" checked":"")+'> Hide completed</label>'+
-     '<input type="search" id="q" placeholder="'+(set.spoilers?"Search missions you've reached":"Search missions")+'" value="'+esc(ui.q)+'">';
+     '<input type="search" id="q"'+PM+' placeholder="'+(set.spoilers?"Search missions you've reached":"Search missions")+'" value="'+esc(ui.q)+'">';
   $("controls").innerHTML=h;
 }
 
@@ -351,7 +369,7 @@ function row(m){
   var h='<li id="row-'+esc(m.id)+'" class="'+(on?"is-done":"")+'"><div class="row"><input type="checkbox" id="cb-'+esc(m.id)+'" data-id="'+esc(m.id)+'"'+(on?" checked":"")+'>'+
     '<label for="cb-'+esc(m.id)+'"><span class="m-name">'+esc(m.name)+'</span>'+(m.note?'<span class="m-sub">'+esc(m.note)+'</span>':"")+(note?'<span class="m-mine">'+esc(note)+'</span>':"")+'</label>'+
     '<span class="tags">'+tags(m)+'</span>'+(set.notes?'<button class="nb" data-note="'+esc(m.id)+'" aria-label="'+(note?"Edit":"Add")+' note for '+esc(m.name)+'">'+(note?"Edit note":"Note")+'</button>':"<span></span>")+'</div>';
-  if(set.notes&&ui.editing===m.id)h+='<div class="editor"><textarea id="ed-'+esc(m.id)+'" aria-label="Note for '+esc(m.name)+'" placeholder="e.g. come back at night, needs Lucia">'+esc(state.notes[m.id]||"")+'</textarea><div class="row-btns"><button class="btn primary small" data-save="'+esc(m.id)+'">Save note</button><button class="btn small" data-cancel="1">Cancel</button>'+(state.notes[m.id]?'<button class="btn small" data-del="'+esc(m.id)+'">Delete note</button>':"")+'</div></div>';
+  if(set.notes&&ui.editing===m.id)h+='<div class="editor"><textarea id="ed-'+esc(m.id)+'"'+PM+' aria-label="Note for '+esc(m.name)+'" placeholder="e.g. come back at night, needs Lucia">'+esc(state.notes[m.id]||"")+'</textarea><div class="row-btns"><button class="btn primary small" data-save="'+esc(m.id)+'">Save note</button><button class="btn small" data-cancel="1">Cancel</button>'+(state.notes[m.id]?'<button class="btn small" data-del="'+esc(m.id)+'">Delete note</button>':"")+'</div></div>';
   return h+'</li>';
 }
 function renderWarnings(){
@@ -370,6 +388,9 @@ function renderList(){
   var html="", q=ui.q;
   CH.forEach(function(c){
     var reached=c.id==="sf"||chReached(c.id)||peekCh[c.id];
+    // In spoiler mode the extra side-mission section stays out of sight until one of its missions is reached
+    if(c.id==="sf"&&set.spoilers&&!c.ms.some(revealed))return;
+    var title=c.id==="sf"&&set.spoilers?"More side missions":c.title;
     var shown=[], hiddenN=0, firstHidden=null;
     c.ms.forEach(function(m){
       if(!passes(m))return;
@@ -381,7 +402,7 @@ function renderList(){
     var d=c.ms.filter(function(m){return state.done[m.id];}).length, n=c.ms.length;
     var shut=ui.closed[c.id]&&!q;
     html+='<section class="'+(shut?"closed":"")+'"><h2 class="chap-h"><button class="chap-head" data-c="'+c.id+'" aria-expanded="'+!shut+'">'+
-      '<span class="chap-no">'+c.no+'</span><span class="chap-title"><span class="ct'+(reached?"":" secret")+'">'+(reached?esc(c.title):"Chapter "+c.no+" · not reached yet")+'</span><span class="mini"><span style="width:'+(n?d/n*100:0)+'%"></span></span></span>'+
+      '<span class="chap-no">'+c.no+'</span><span class="chap-title"><span class="ct'+(reached?"":" secret")+'">'+(reached?esc(title):"Chapter "+c.no+" · not reached yet")+'</span><span class="mini"><span style="width:'+(n?d/n*100:0)+'%"></span></span></span>'+
       '<span class="chap-count">'+d+'/'+n+' <span class="caret" aria-hidden="true">▾</span></span></button></h2><ul>';
     shown.forEach(function(m){html+=row(m);});
     if(hiddenN)html+='<li class="secret"><div class="hidden-row"><span>'+hiddenN+(shown.length?" more":"")+' mission'+(hiddenN>1?"s":"")+' hidden to avoid spoilers</span><span class="row-btns"><button class="btn small" data-peek="'+esc(firstHidden.id)+'">Show next</button><button class="btn small" data-peekch="'+c.id+'">Show all</button></span></div></li>';
@@ -393,7 +414,7 @@ function renderList(){
 
 // ---------- TROPHIES & COLLECTIBLES ----------
 function renderExtras(){
-  if(!set.extras){$("extrasView").innerHTML="";return;}
+  if(!set.extras||view()!=="trophies"){$("extrasView").innerHTML="";return;}
   var h='<section><h2 class="chap-h"><span class="chap-head" style="cursor:default"><span class="chap-no">T</span><span class="chap-title"><span class="ct">Trophies</span></span><span class="chap-count">'+TR.filter(function(x){return state.trophies[x.id];}).length+'/'+TR.length+'</span></span></h2><ul>';
   TR.forEach(function(t){
     var on=!!state.trophies[t.id], show=!set.spoilers||!t.hid||on||peekTr[t.id];
@@ -409,7 +430,7 @@ function renderExtras(){
     g.items.forEach(function(it){
       var v=state.col[it[0]]||0;
       h+='<li class="'+(v>=it[2]?"full":"")+'"><div class="ctr"><label for="n-'+it[0]+'" class="m-name">'+esc(it[1])+'</label>'+
-        '<span class="stepper"><button data-step="'+it[0]+'" data-d="-1" aria-label="One fewer '+esc(it[1])+'">−</button><input type="number" id="n-'+it[0]+'" data-col="'+it[0]+'" min="0" max="'+it[2]+'" value="'+v+'" inputmode="numeric"><button data-step="'+it[0]+'" data-d="1" aria-label="One more '+esc(it[1])+'">+</button><span class="of">/'+it[2]+'</span></span></div></li>';
+        '<span class="stepper"><button data-step="'+it[0]+'" data-d="-1" aria-label="One fewer '+esc(it[1])+'">−</button><input type="number" id="n-'+it[0]+'"'+PM+' data-col="'+it[0]+'" min="0" max="'+it[2]+'" value="'+v+'" inputmode="numeric"><button data-step="'+it[0]+'" data-d="1" aria-label="One more '+esc(it[1])+'">+</button><span class="of">/'+it[2]+'</span></span></div></li>';
     });
     h+='</ul></section>';
   });
@@ -418,20 +439,22 @@ function renderExtras(){
 
 // ---------- SETTINGS, BACKUP ----------
 function renderSettings(){
-  var p=$("settings");p.hidden=!ui.settingsOpen;$("setBtn").setAttribute("aria-expanded",ui.settingsOpen);
-  if(!ui.settingsOpen)return;
-  var opts=[["spoilers","Spoiler-free mode","Hide mission names, chapter names and hidden trophies until you reach them."],
+  var p=$("optionsView");
+  if(view()!=="options"){p.innerHTML="";return;}
+  var opts=[["spoilers","Spoiler-free mode","Hide mission names, chapter names, side missions and hidden trophies until you reach them."],
     ["missables","Missable warnings","Show a reminder of missable missions before you can lose them."],
     ["notes","Mission notes","Add your own note to any mission."],
     ["character","Jason / Lucia filter","Show the character filter above the mission list."],
     ["extras","Trophies & Collectibles tab","Track trophies and collectible counts."]];
-  p.innerHTML='<h2>Settings</h2><div><h3>Features</h3><div class="switches">'+opts.map(function(o){
+  p.innerHTML='<div class="view-head"><h2>Settings</h2><button class="btn" id="doneBtn">Back to tracker</button></div>'+
+    '<div><h3>Appearance</h3><div class="seg" role="group" aria-label="Theme"><button data-theme-set="dark" aria-pressed="'+(set.theme!=="light")+'">Dark</button><button data-theme-set="light" aria-pressed="'+(set.theme==="light")+'">Light</button></div></div>'+
+    '<div><h3>Features</h3><div class="switches">'+opts.map(function(o){
     return '<label class="sw"><input type="checkbox" class="swc" role="switch" id="set-'+o[0]+'" data-set="'+o[0]+'"'+(set[o[0]]?" checked":"")+'><span><b>'+o[1]+'</b><small>'+o[2]+'</small></span></label>';}).join("")+
     '</div><p class="msg">These settings are saved in this browser.</p></div>'+
     '<div class="backup"><h3>Backup &amp; restore</h3><p class="msg" style="margin:0">Copy your backup code to keep your progress safe or move it to another device or browser. It includes ticks, notes, trophies and collectibles.</p>'+
     '<div class="row-btns"><button class="btn" id="mkBackup">Create backup code</button><button class="btn" id="cpBackup" hidden>Copy code</button><span class="msg" id="bkMsg" aria-live="polite"></span></div>'+
-    '<textarea id="bkOut" readonly hidden aria-label="Your backup code"></textarea>'+
-    '<label for="bkIn" class="msg">Paste a backup code to restore:</label><textarea id="bkIn" placeholder="GTA6:…"></textarea>'+
+    '<textarea id="bkOut"'+PM+' readonly hidden aria-label="Your backup code"></textarea>'+
+    '<label for="bkIn" class="msg">Paste a backup code to restore:</label><textarea id="bkIn"'+PM+' placeholder="GTA6:…"></textarea>'+
     '<div class="row-btns"><button class="btn" id="restore">Restore</button><span id="rsConfirm" hidden><button class="btn primary small" id="rsYes">Replace my progress</button> <button class="btn small" id="rsNo">Cancel</button></span><span class="msg" id="rsMsg" aria-live="polite"></span></div></div>'+
     '<div class="backup"><h3>Reset</h3><div class="row-btns"><button class="btn" id="reset">Reset all progress</button><span id="resetConfirm" hidden><button class="btn primary small" id="resetYes">Yes, clear everything</button> <button class="btn small" id="resetNo">Cancel</button></span></div></div>';
 }
@@ -474,7 +497,7 @@ function persist(){
     });
   },1800);
 }
-function changed(){renderBars();renderWarnings();renderList();if(ui.tab==="extras")renderExtras();persist();}
+function changed(){renderBars();renderWarnings();renderList();renderExtras();persist();}
 
 // ---------- EVENTS ----------
 document.addEventListener("change",function(e){
@@ -489,8 +512,11 @@ document.addEventListener("change",function(e){
 document.addEventListener("input",function(e){if(e.target.id==="q"){ui.q=norm(e.target.value).trim();renderList();}});
 document.addEventListener("click",function(e){
   var b=e.target.closest("button");if(!b)return;var d=b.dataset;
-  if(b.id==="setBtn"){ui.settingsOpen=!ui.settingsOpen;renderSettings();if(ui.settingsOpen)$("settings").scrollIntoView({block:"nearest",behavior:"smooth"});return;}
-  if(d.tab){ui.tab=d.tab;saveUI();renderTabs();renderBars();renderExtras();return;}
+  if(b.id==="home"){try{history.replaceState(null,"",location.pathname+location.search);}catch(err){}location.reload();return;}
+  if(b.id==="setBtn"){go(view()==="options"?"missions":"options");return;}
+  if(b.id==="doneBtn"){go("missions");return;}
+  if(d.themeSet){set.theme=d.themeSet;saveSet();applyTheme();renderSettings();return;}
+  if(d.tab){go(d.tab);return;}
   if(d.f){ui.filter=d.f;saveUI();renderControls();renderList();return;}
   if(d.w){ui.who=d.w;saveUI();renderControls();renderList();return;}
   if(d.c){ui.closed[d.c]=!ui.closed[d.c];saveUI();b.closest("section").classList.toggle("closed",!!ui.closed[d.c]);b.setAttribute("aria-expanded",!ui.closed[d.c]);return;}
@@ -504,7 +530,7 @@ document.addEventListener("click",function(e){
   if(d.step){var it=null;COL.forEach(function(g){g.items.forEach(function(x){if(x[0]===d.step)it=x;});});
     var v2=Math.max(0,Math.min(it[2],(state.col[d.step]||0)+parseInt(d.d,10)));if(v2)state.col[d.step]=v2;else delete state.col[d.step];
     renderBars();renderExtras();persist();var inp=$("n-"+d.step);if(inp)inp.closest(".stepper").querySelector('[data-d="'+d.d+'"]').focus();return;}
-  if(d.jump){var m=BYID[d.jump];ui.closed[m.ch]=false;ui.filter="all";ui.who="all";ui.hideDone=false;ui.q="";renderControls();renderList();
+  if(d.jump){var m=BYID[d.jump];if(view()!=="missions"){go("missions");}ui.closed[m.ch]=false;ui.filter="all";ui.who="all";ui.hideDone=false;ui.q="";renderControls();renderList();
     var r=$("row-"+d.jump);if(r){r.scrollIntoView({block:"center",behavior:"smooth"});r.classList.add("flash");setTimeout(function(){r.classList.remove("flash");},1700);}return;}
   if(b.id==="mkBackup"){var o=$("bkOut");o.value=encode();o.hidden=false;$("cpBackup").hidden=false;o.select();$("bkMsg").textContent="Code created.";return;}
   if(b.id==="cpBackup"){var out=$("bkOut");
@@ -526,6 +552,7 @@ function loadLocal(){
   if(!hasProgress(state)){var l=lsGet(LS);if(l){state=normalize(l);renderAll();}}
   setStatus(hasProgress(state)?"Saved in this browser":"Tick a mission to start");
 }
+window.addEventListener("hashchange",function(){ui.editing=null;renderAll();window.scrollTo(0,0);});
 renderAll();
 if(window.claude&&window.claude.use){
   setStatus("Connecting…");
