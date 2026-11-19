@@ -50,9 +50,10 @@ section{display:grid;gap:8px}
 .chap-head{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;cursor:pointer;user-select:none;border:0;background:none;color:inherit;font:inherit;text-align:left;padding:0}
 .chap-no{font-family:var(--display);font-size:30px;line-height:1;color:var(--pink);min-width:2ch}
 .chap-title{min-width:0}
-.chap-title h2{font-family:var(--display);font-weight:400;font-size:21px;letter-spacing:.02em;text-transform:uppercase;margin:0;line-height:1.1;text-wrap:balance}
-.chap-title .mini{margin-top:6px;height:5px;background:var(--track);border-radius:3px;overflow:hidden}
-.chap-title .mini div{height:100%;background:var(--pink);transition:width .35s ease}
+.chap-h{margin:0;font:inherit}
+.chap-title .ct{display:block;font-family:var(--display);font-weight:400;font-size:21px;letter-spacing:.02em;text-transform:uppercase;margin:0;line-height:1.1;text-wrap:balance}
+.chap-title .mini{display:block;margin-top:6px;height:5px;background:var(--track);border-radius:3px;overflow:hidden}
+.chap-title .mini span{display:block;height:100%;background:var(--pink);transition:width .35s ease}
 .chap-count{font-family:var(--mono);font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;display:flex;gap:8px;align-items:center}
 .caret{transition:transform .2s}
 section.closed .caret{transform:rotate(-90deg)}
@@ -81,7 +82,7 @@ main .wrap.notewrap{padding-block:16px 0}
 .empty{padding:14px;color:var(--muted);font-size:14px}
 footer{font-size:12px;color:var(--muted);text-align:center}
 .reset{font:inherit;font-size:12px;background:none;border:1px solid var(--line);color:var(--muted);border-radius:6px;padding:4px 10px;cursor:pointer}
-@media (max-width:520px){li label{grid-template-columns:22px 1fr}.tags{grid-column:2;justify-content:flex-start}}
+@media (max-width:520px){header{position:static}li label{grid-template-columns:22px 1fr}.tags{grid-column:2;justify-content:flex-start}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 <div id="app"></div>
@@ -133,12 +134,13 @@ app.innerHTML=
 '<main><div class="wrap notewrap"><div class="note" role="note"><b>Heads up:</b> this list was put together from community guides published in GTA VI\'s launch week, so it may not be 100% accurate. Guides disagree on which small objectives count as missions, some missions can appear in a different order, and side missions are still being discovered. The list is checked against the latest guides weekly. <span class="checked">Last checked: 19 Nov 2026</span></div></div><div class="wrap" id="list"></div><div class="wrap"><footer><p>Story order from launch-week guides; a few side missions may appear in a different order in your game.</p><button class="reset" id="reset">Reset all progress</button> <span id="resetConfirm" hidden><button class="reset" id="resetYes">Yes, clear every tick</button> <button class="reset" id="resetNo">Cancel</button></span></footer></div></main>';
 
 var list=document.getElementById("list");
+function norm(t){return String(t).toLowerCase().replace(/[^a-z0-9 ]+/g,"").replace(/\s+/g," ");}
 function isStory(m){return m.kind==="m";}
 function visible(m){
   if(ui.filter==="story"&&!isStory(m))return false;
   if(ui.filter==="side"&&isStory(m))return false;
   if(ui.hideDone&&state.done[m.id])return false;
-  if(ui.q&&(m.name+" "+m.note).toLowerCase().indexOf(ui.q)<0)return false;
+  if(ui.q&&norm(m.name+" "+m.note).indexOf(ui.q)<0)return false;
   return true;
 }
 function tags(m){
@@ -155,9 +157,10 @@ function render(){
     var vis=c.ms.filter(visible);
     if(!vis.length&&(ui.q||ui.hideDone||ui.filter!=="all"))return;
     var d=c.ms.filter(function(m){return state.done[m.id];}).length, n=c.ms.length;
-    html+='<section class="'+(ui.closed[c.id]?"closed":"")+'"><button class="chap-head" data-c="'+c.id+'" aria-expanded="'+!ui.closed[c.id]+'">'+
-      '<span class="chap-no">'+c.no+'</span><span class="chap-title"><h2>'+esc(c.title)+'</h2><span class="mini" style="display:block"><div style="width:'+(n?d/n*100:0)+'%"></div></span></span>'+
-      '<span class="chap-count">'+d+'/'+n+' <span class="caret">▾</span></span></button><ul>';
+    var shut=ui.closed[c.id]&&!ui.q;
+    html+='<section class="'+(shut?"closed":"")+'"><h2 class="chap-h"><button class="chap-head" data-c="'+c.id+'" aria-expanded="'+!shut+'">'+
+      '<span class="chap-no">'+c.no+'</span><span class="chap-title"><span class="ct">'+esc(c.title)+'</span><span class="mini"><span style="width:'+(n?d/n*100:0)+'%"></span></span></span>'+
+      '<span class="chap-count">'+d+'/'+n+' <span class="caret" aria-hidden="true">▾</span></span></button></h2><ul>';
     if(!vis.length)html+='<li class="empty">Nothing to show here.</li>';
     vis.forEach(function(m){
       var on=!!state.done[m.id];
@@ -210,7 +213,7 @@ list.addEventListener("change",function(e){
     var sec=e.target.closest("section"),c=CH.filter(function(x){return x.id===sec.querySelector(".chap-head").dataset.c;})[0];
     var d=c.ms.filter(function(m){return state.done[m.id];}).length;
     sec.querySelector(".chap-count").firstChild.textContent=d+"/"+c.ms.length+" ";
-    sec.querySelector(".mini div").style.width=(d/c.ms.length*100)+"%";
+    sec.querySelector(".mini span").style.width=(d/c.ms.length*100)+"%";
     bars();
   }
   persist();
@@ -218,11 +221,11 @@ list.addEventListener("change",function(e){
 list.addEventListener("click",function(e){
   var h=e.target.closest(".chap-head");if(!h)return;
   var id=h.dataset.c;ui.closed[id]=!ui.closed[id];saveUI();
-  h.parentNode.classList.toggle("closed",!!ui.closed[id]);h.setAttribute("aria-expanded",!ui.closed[id]);
+  h.closest("section").classList.toggle("closed",!!ui.closed[id]);h.setAttribute("aria-expanded",!ui.closed[id]);
 });
 document.querySelectorAll(".seg button").forEach(function(b){b.addEventListener("click",function(){ui.filter=b.dataset.f;saveUI();render();});});
 document.getElementById("hideDone").addEventListener("change",function(e){ui.hideDone=e.target.checked;saveUI();render();});
-document.getElementById("q").addEventListener("input",function(e){ui.q=e.target.value.trim().toLowerCase();render();});
+document.getElementById("q").addEventListener("input",function(e){ui.q=norm(e.target.value).trim();render();});
 var rc=document.getElementById("resetConfirm");
 document.getElementById("reset").addEventListener("click",function(){rc.hidden=false;});
 document.getElementById("resetNo").addEventListener("click",function(){rc.hidden=true;});
