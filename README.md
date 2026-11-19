@@ -10,7 +10,7 @@ A free single-page checklist for GTA VI: every story mission, optional mission a
 - **Missable warnings**: reminds you of missable missions while you can still do them.
 - **Jason / Lucia filter**: shows the missions for one character.
 - **Notes**: add your own note to any mission.
-- **Trophies & Collectibles**: all 55 trophies, plus counters for every collectible type with a "for 100%" progress bar.
+- **Trophies / Achievements & Collectibles**: switch between PlayStation (55 trophies) and Xbox (55 achievements, 1,000 Gamerscore). Your ticks carry across both. Plus counters for every collectible type with a "for 100%" progress bar.
 - **Backup & restore**: copy a backup code to keep your progress safe or move it to another device or browser.
 - **Dark or light theme** (dark by default).
 - Each feature can be switched off on the **Settings** page. Settings and progress are saved in your browser, so everyone who visits keeps their own.
@@ -26,6 +26,7 @@ Plain HTML, no build step. GitHub Pages serves `index.html` from the `main` bran
 
 - [GameTrek – All Missions List](https://gmtreks.com/gta6/page/01M7QSGT3QP6VF7KRTAP9HRZ1W)
 - [GameTrek – Trophy Guide](https://gmtreks.com/gta6/page/01M7Q14ZF65PPK5FFXSY3CJNKQ)
+- [GTABase – GTA 6 Achievements & Trophies List](https://www.gtabase.com/articles/gta-6/gta-6-achievements-trophies-list-ps5-xbox-series)
 - [GameTrek – All Collectibles Guide](https://gmtreks.com/gta6/page/01M7Q14Z47TMRMR101MF07KYYA)
 - [TechWiser – All GTA 6 Main and Strangers & Freaks Missions](https://techwiser.com/gta-6-missions/)
 - [Beebom – GTA 6 Missions List](https://beebom.com/gta-6-missions-list-walkthrough/)

@@ -59,6 +59,7 @@ h1 span{background:linear-gradient(90deg,var(--sun),var(--pink));-webkit-backgro
 .btn.small{font-size:12px;padding:3px 9px}
 .btn[aria-current="page"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
 .panel .seg{width:fit-content}
+.plat{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
 .view-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
 .tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:-12px}
 .tabs button{font:inherit;font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:.06em;padding:8px 12px;border:0;border-bottom:3px solid transparent;background:none;color:var(--muted);cursor:pointer}
@@ -146,6 +147,7 @@ li.secret .m-name{color:var(--muted);font-style:italic;font-weight:500}
 .tag.opt{color:var(--teal);border-color:var(--teal)}
 .tag.miss{color:var(--sun);border-color:var(--sun)}
 .tag.sf{color:var(--pink);border-color:var(--pink)}
+.tag.g-X{color:var(--teal);border-color:var(--teal)}.tag.g-M{color:var(--plat);border-color:var(--plat)}
 .tag.g-P{color:var(--plat);border-color:var(--plat)}.tag.g-G{color:var(--gold);border-color:var(--gold)}.tag.g-S{color:var(--silver);border-color:var(--silver)}.tag.g-B{color:var(--bronze);border-color:var(--bronze)}
 .nb{font:inherit;font-size:12px;font-weight:600;color:var(--muted);background:none;border:1px solid transparent;border-radius:6px;padding:3px 7px;cursor:pointer}
 .nb:hover{border-color:var(--line);color:var(--ink)}
@@ -194,14 +196,14 @@ var CH=[
 {id:"sf",no:"S",title:"Strangers & Freaks · more side missions",ms:[
 ["Search for the Skunk Ape","Kirk · night only","s","","c1"],["Search for Tree Effigies","Kirk","s","","c1"],["Help Kirk Find Mr. Mangrove","Kirk · night only","s","Lucia","c1"],["Steal Vehicles for Moses","Moses","s","","c2"],["Bret's Hunting Decks","Bret · trophy: Fair Game","s","Jason","c2"],["The Impaler","Billy","s","","c2"],["Hometown Heroes","Billy · trophy: The Lone Rider","s","","c2"],["Climbing the Cellerichain (Parts 1–3)","Andy","s","Lucia","c3"],["Pay the Cellerica Fee","Andy","s","Lucia","c3"],["Peach!","Andy","s","Lucia","c3"],["Read the Label","Andy","s","Lucia","c3"],["Puff Puff Pass","Andy · trophy: Road to Rehabilitation","s","Lucia","c3"],["Yasmani's ATM Jobs","Yasmani","s","","c3"],["Yasmani's Payday Loans Jobs","Yasmani","s","","c3"],["Tail the Security Van","Yasmani","s","","c3"],["Randy's Wish List","Randy · trophy: Supply & Demand","s","","c3"],["Take Out Kitty Litter","Tyrone","s","","c3"],["Spin On This","Tyrone · trophy: Spin On This!","s","","c3"],["Dunk's Robbery Tips","Dunk","s","","c3"],["The Last Mile: Passing the Torch","Pilot Pete","s","Jason","c4"],["The Last Mile: Backseat Pilot","Pilot Pete","s","Jason","c4"],["Pete's Deliveries: Southpoint Airfield","Pilot Pete","s","Jason","c4"],["Pete's Deliveries: Avery Allen & Co.","Pilot Pete","s","Jason","c4"],["Deliver Packages","Pilot Pete","s","Jason","c4"]]}
 ];
-// Trophies: [name, grade P/G/S/B, how to unlock, hidden in-game]
+// Trophies / achievements: [name, PlayStation grade P/G/S/B, how to unlock, hidden in-game, Xbox Gamerscore (0 = Mythic)]
 var TR=[
-["Vice Got a Price!","P","Earn all other trophies",0],["A Long Road","G","Reach 100% completion",0],["You Gotta Know When to Get Off","G","Complete the final mission",1],
-["Cunning Stunts","S","Complete 250 stunts",0],["The Shootist","S","Earn gold medals in every Shooting Range challenge",0],["Maximum Withdrawal","S","Rob 5 bank vaults and escape",0],["Strangers & Freaks","S","Complete 8 Strangers & Freaks questlines",0],["Don't Touch My Deck","S","Complete 3 Collectible Card sets",0],["You WAiNKer!","S","WAiNK it at 100 locations",0],
-["Just Like Paradise","B","Complete Gone Fishing",1],["Paradise Lost","B","Complete Chapter 1",1],["Tits Ass Drug Money","B","Complete Chapter 2",1],["Vice City, Baby!","B","Complete Chapter 3",1],["Top of the World, Ma","B","Complete Chapter 4",1],["Trust","B","Complete Breakfast Run",1],["Break the Bank","B","Complete The Cartel Heist",1],["Family Matters","B","Complete Child's Play",1],["DWNFALL","B","Complete Headliners",1],["Hi-Jacked","B","Complete VCIA Takedown",1],["Snow Storm","B","Complete Operation Savage Glory",1],
-["Road to Rehabilitation","B","Finish Andy's questline",1],["This Was No Boat Accident","B","Finish Kenton's questline",1],["The Lone Rider","B","Finish Billy's questline",1],["Supply & Demand","B","Finish Randy's questline",1],["Spin On This!","B","Finish Tyrone's questline",1],["Fair Game","B","Hunt a unique animal for Bret",1],
-["Master of None","B","Try every type of activity once",0],["Top Fun","B","Win a Top Fun drone race at every location",0],["Earn Cash, Not Kudos","B","Win 20 different races",0],["Baited My Tackle","B","Beat Cal in a fishing challenge",0],["Stick Fiddler","B","Complete an arcade game",0],["Positive Mental Attitude","B","Meditate at all 18 spots across Leonida",0],["One Last Thing","B","Complete 50 Challenges",0],["Hot Together","B","Lose a 4-star wanted level with a partner",0],["Retail Therapy","B","Rob 3 shops back to back with a partner without losing your wanted level",0],["Sneakthief","B","Rob a jewelry store without being detected",0],["A Classic Blitz Play","B","Rob an armored truck and escape",0],["Pest Control","B","Rob an illegal operation belonging to each gang",0],["Dime on the Dollar","B","Launder $250,000 of marked bills",0],["Gunslinger","B","Take down 5 enemies in one use of Combat Focus",0],["The Goodtime State","B","Explore all of Leonida",0],["Whip It Good","B","Discover 100 vehicles",0],["Little Boxes","B","Buy every garage property",0],["On the Spot","B","Register 10 vehicles on the Scooter Bros app",0],["Treat Yo Self","B","Spend $100,000 across all shops",0],
-["Catch Me If You Can","B","Make an unscheduled departure at VCIA",1],["Challenging Tank","B","Requirement not confirmed yet (involves a Rhino tank)",1],["In The Beginning...","B","Enjoy a cocktail with a view on Ocean Beach",1],["Capital Offense","B","Smash out of a vehicle showroom",1],["Let's Go Bowling","B","Follow through at the Kolt & Associates bowling alley",1],["Personal Best","B","Requirement not confirmed yet",1],["Actions Speak Louder","B","Requirement not confirmed yet",1],["Bad Luck, I Guess","B","Requirement not confirmed yet",1],["The Truth Is Out There","B","Requirement not confirmed yet",1],["Ten Pin","B","Bowl enemies over with a melee drive-by",1]
+["Vice Got a Price!","P","Earn all other trophies",0,0],["A Long Road","G","Reach 100% completion",0,100],["You Gotta Know When to Get Off","G","Complete the final mission",1,50],
+["Cunning Stunts","S","Complete 250 stunts",0,40],["The Shootist","S","Earn gold medals in every Shooting Range challenge",0,40],["Maximum Withdrawal","S","Rob 5 bank vaults and escape",0,40],["Strangers & Freaks","S","Complete 8 Strangers & Freaks questlines",0,30],["Don't Touch My Deck","S","Complete 3 Collectible Card sets",0,30],["You WAiNKer!","S","WAiNK it at 100 locations",0,30],
+["Just Like Paradise","B","Complete Gone Fishing",1,5],["Paradise Lost","B","Complete Chapter 1",1,20],["Tits Ass Drug Money","B","Complete Chapter 2",1,20],["Vice City, Baby!","B","Complete Chapter 3",1,20],["Top of the World, Ma","B","Complete Chapter 4",1,20],["Trust","B","Complete Breakfast Run",1,10],["Break the Bank","B","Complete The Cartel Heist",1,25],["Family Matters","B","Complete Child's Play",1,15],["DWNFALL","B","Complete Headliners",1,15],["Hi-Jacked","B","Complete VCIA Takedown",1,25],["Snow Storm","B","Complete Operation Savage Glory",1,25],
+["Road to Rehabilitation","B","Finish Andy's questline",1,15],["This Was No Boat Accident","B","Finish Kenton's questline",1,15],["The Lone Rider","B","Finish Billy's questline",1,15],["Supply & Demand","B","Finish Randy's questline",1,20],["Spin On This!","B","Finish Tyrone's questline",1,15],["Fair Game","B","Hunt a unique animal for Bret",1,15],
+["Master of None","B","Try every type of activity once",0,20],["Top Fun","B","Win a Top Fun drone race at every location",0,15],["Earn Cash, Not Kudos","B","Win 20 different races",0,20],["Baited My Tackle","B","Beat Cal in a fishing challenge",0,10],["Stick Fiddler","B","Complete an arcade game",0,10],["Positive Mental Attitude","B","Meditate at all 18 spots across Leonida",0,10],["One Last Thing","B","Complete 50 Challenges",0,5],["Hot Together","B","Lose a 4-star wanted level with a partner",0,20],["Retail Therapy","B","Rob 3 shops back to back with a partner without losing your wanted level",0,20],["Sneakthief","B","Rob a jewelry store without being detected",0,10],["A Classic Blitz Play","B","Rob an armored truck and escape",0,10],["Pest Control","B","Rob an illegal operation belonging to each gang",0,20],["Dime on the Dollar","B","Launder $250,000 of marked bills",0,20],["Gunslinger","B","Take down 5 enemies in one use of Combat Focus",0,10],["The Goodtime State","B","Explore all of Leonida",0,20],["Whip It Good","B","Discover 100 vehicles",0,20],["Little Boxes","B","Buy every garage property",0,15],["On the Spot","B","Register 10 vehicles on the Scooter Bros app",0,15],["Treat Yo Self","B","Spend $100,000 across all shops",0,15],
+["Catch Me If You Can","B","Make an unscheduled departure at VCIA",1,10],["Challenging Tank","B","Requirement not confirmed yet (involves a Rhino tank)",1,10],["In The Beginning...","B","Enjoy a cocktail with a view on Ocean Beach",1,5],["Capital Offense","B","Smash out of a vehicle showroom",1,5],["Let's Go Bowling","B","Follow through at the Kolt & Associates bowling alley",1,5],["Personal Best","B","Requirement not confirmed yet",1,5],["Actions Speak Louder","B","Requirement not confirmed yet",1,5],["Bad Luck, I Guess","B","Requirement not confirmed yet",1,5],["The Truth Is Out There","B","Requirement not confirmed yet",1,5],["Ten Pin","B","Bowl enemies over with a melee drive-by",1,5]
 ];
 var GRADE={P:"Platinum",G:"Gold",S:"Silver",B:"Bronze"};
 // Collectibles: groups of [key, name, total, needed for 100% (null = not counted)]; group.need overrides with a group total
@@ -228,7 +230,8 @@ CH.forEach(function(c){
     return o;
   });
 });
-TR=TR.map(function(t){return{id:"t:"+slug(t[0]),name:t[0],g:t[1],how:t[2],hid:!!t[3]};});
+TR=TR.map(function(t){return{id:"t:"+slug(t[0]),name:t[0],g:t[1],how:t[2],hid:!!t[3],gs:t[4]||0};});
+var GS_TOTAL=TR.reduce(function(a,t){return a+t.gs;},0);
 
 // ---------- STATE ----------
 function blank(){return{v:2,done:{},notes:{},trophies:{},col:{}};}
@@ -247,7 +250,7 @@ try{state=normalize(JSON.parse(document.getElementById("state").textContent));}c
 var LS="gta6-tracker-v1", LSUI=LS+"-ui", LSSET="gta6-tracker-settings";
 function lsGet(k){try{return JSON.parse(localStorage.getItem(k)||"null");}catch(e){return null;}}
 function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
-var DEF={theme:"dark",spoilers:true,missables:true,notes:true,character:true,extras:true};
+var DEF={theme:"dark",platform:"ps",spoilers:true,missables:true,notes:true,character:true,extras:true};
 var set=Object.assign({},DEF,lsGet(LSSET)||{});
 var ui=Object.assign({filter:"all",who:"all",hideDone:false,closed:{}},lsGet(LSUI)||{});
 ui.q="";ui.editing=null;
@@ -264,6 +267,9 @@ function go(v){if(view()!==v||location.hash.slice(1)!==v)location.hash=v;}
 var PM=' autocomplete="off" data-bwignore="true" data-lpignore="true" data-1p-ignore="true" data-form-type="other"';
 function saveSet(){lsSet(LSSET,set);}
 function esc(t){return String(t).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+function XB(){return set.platform==="xbox";}
+// Swap trophy wording for achievement wording on Xbox
+function T(t){return XB()?String(t).replace(/Trophies/g,"Achievements").replace(/trophies/g,"achievements").replace(/Trophy/g,"Achievement").replace(/trophy/g,"achievement"):t;}
 function norm(t){return String(t).toLowerCase().replace(/[^a-z0-9 ]+/g,"").replace(/\s+/g," ");}
 
 // ---------- SPOILER LOGIC ----------
@@ -318,8 +324,10 @@ function renderBars(){
   var h;
   var v=view();$("bars").hidden=v==="options";if(v==="options")return;
   if(v==="trophies"){
-    var t=TR.filter(function(x){return state.trophies[x.id];}).length, c=colNeed();
-    h=bar("Trophies",t,TR.length,"","Trophy progress")+bar("Collectibles for 100%",c[0],c[1],"teal","Collectible progress");
+    var c=colNeed();
+    if(XB()){var g=TR.reduce(function(a,x){return a+(state.trophies[x.id]?x.gs:0);},0);h=bar("Gamerscore",g,GS_TOTAL,"","Gamerscore progress");}
+    else h=bar("Trophies",TR.filter(function(x){return state.trophies[x.id];}).length,TR.length,"","Trophy progress");
+    h+=bar("Collectibles for 100%",c[0],c[1],"teal","Collectible progress");
   }else{
     var all=0,ad=0,st=0,sd=0;
     CH.forEach(function(ch){ch.ms.forEach(function(m){all++;if(state.done[m.id])ad++;if(m.kind==="m"){st++;if(state.done[m.id])sd++;}});});
@@ -330,6 +338,7 @@ function renderBars(){
 function renderTabs(){
   var v=view();
   $("tabs").hidden=!set.extras||v==="options";
+  $("tabs").querySelector('[data-tab="trophies"]').textContent=(XB()?"Achievements":"Trophies")+" & Collectibles";
   Array.prototype.forEach.call($("tabs").querySelectorAll("button"),function(b){if(b.dataset.tab===v)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current");});
   $("missionsView").hidden=v!=="missions";
   $("extrasView").hidden=v!=="trophies";
@@ -367,7 +376,7 @@ function tags(m){
 function row(m){
   var on=!!state.done[m.id], note=set.notes&&state.notes[m.id];
   var h='<li id="row-'+esc(m.id)+'" class="'+(on?"is-done":"")+'"><div class="row"><input type="checkbox" id="cb-'+esc(m.id)+'" data-id="'+esc(m.id)+'"'+(on?" checked":"")+'>'+
-    '<label for="cb-'+esc(m.id)+'"><span class="m-name">'+esc(m.name)+'</span>'+(m.note?'<span class="m-sub">'+esc(m.note)+'</span>':"")+(note?'<span class="m-mine">'+esc(note)+'</span>':"")+'</label>'+
+    '<label for="cb-'+esc(m.id)+'"><span class="m-name">'+esc(m.name)+'</span>'+(m.note?'<span class="m-sub">'+esc(T(m.note))+'</span>':"")+(note?'<span class="m-mine">'+esc(note)+'</span>':"")+'</label>'+
     '<span class="tags">'+tags(m)+'</span>'+(set.notes?'<button class="nb" data-note="'+esc(m.id)+'" aria-label="'+(note?"Edit":"Add")+' note for '+esc(m.name)+'">'+(note?"Edit note":"Note")+'</button>':"<span></span>")+'</div>';
   if(set.notes&&ui.editing===m.id)h+='<div class="editor"><textarea id="ed-'+esc(m.id)+'"'+PM+' aria-label="Note for '+esc(m.name)+'" placeholder="e.g. come back at night, needs Lucia">'+esc(state.notes[m.id]||"")+'</textarea><div class="row-btns"><button class="btn primary small" data-save="'+esc(m.id)+'">Save note</button><button class="btn small" data-cancel="1">Cancel</button>'+(state.notes[m.id]?'<button class="btn small" data-del="'+esc(m.id)+'">Delete note</button>':"")+'</div></div>';
   return h+'</li>';
@@ -415,18 +424,20 @@ function renderList(){
 // ---------- TROPHIES & COLLECTIBLES ----------
 function renderExtras(){
   if(!set.extras||view()!=="trophies"){$("extrasView").innerHTML="";return;}
-  var h='<section><h2 class="chap-h"><span class="chap-head" style="cursor:default"><span class="chap-no">T</span><span class="chap-title"><span class="ct">Trophies</span></span><span class="chap-count">'+TR.filter(function(x){return state.trophies[x.id];}).length+'/'+TR.length+'</span></span></h2><ul>';
+  var got=TR.filter(function(x){return state.trophies[x.id];});
+  var h='<div class="plat"><div class="seg" role="group" aria-label="Platform"><button data-plat="ps" aria-pressed="'+!XB()+'">PlayStation</button><button data-plat="xbox" aria-pressed="'+XB()+'">Xbox</button></div><span class="msg">'+(XB()?"55 achievements · "+GS_TOTAL+" Gamerscore":"55 trophies · 1 Platinum, 2 Gold, 6 Silver, 46 Bronze")+'</span></div>';
+  h+='<section><h2 class="chap-h"><span class="chap-head" style="cursor:default"><span class="chap-no">'+(XB()?"A":"T")+'</span><span class="chap-title"><span class="ct">'+(XB()?"Achievements":"Trophies")+'</span></span><span class="chap-count">'+(XB()?got.reduce(function(a,x){return a+x.gs;},0)+'/'+GS_TOTAL+'G':got.length+'/'+TR.length)+'</span></span></h2><ul>';
   TR.forEach(function(t){
     var on=!!state.trophies[t.id], show=!set.spoilers||!t.hid||on||peekTr[t.id];
     h+='<li class="'+(on?"is-done":"")+(show?"":" secret")+'"><div class="row"><input type="checkbox" id="cb-'+t.id+'" data-tr="'+t.id+'"'+(on?" checked":"")+'>'+
-      '<label for="cb-'+t.id+'"><span class="m-name">'+(show?esc(t.name):"Hidden trophy")+'</span><span class="m-sub">'+(show?esc(t.how):"Hidden to avoid spoilers")+'</span></label>'+
-      '<span class="tags"><span class="tag g-'+t.g+'">'+GRADE[t.g]+'</span></span>'+(show?"<span></span>":'<button class="nb" data-peektr="'+t.id+'">Show</button>')+'</div></li>';
+      '<label for="cb-'+t.id+'"><span class="m-name">'+(show?esc(t.name):(XB()?"Hidden achievement":"Hidden trophy"))+'</span><span class="m-sub">'+(show?esc(T(t.how)):"Hidden to avoid spoilers")+'</span></label>'+
+      '<span class="tags">'+(XB()?(t.gs?'<span class="tag g-X">'+t.gs+'G</span>':'<span class="tag g-M">Mythic</span>'):'<span class="tag g-'+t.g+'">'+GRADE[t.g]+'</span>')+'</span>'+(show?"<span></span>":'<button class="nb" data-peektr="'+t.id+'">Show</button>')+'</div></li>';
   });
   h+='</ul></section>';
   COL.forEach(function(g,gi){
     var sum=0,tot=0;g.items.forEach(function(it){sum+=Math.min(state.col[it[0]]||0,it[2]);tot+=it[2];});
     h+='<section><h2 class="chap-h"><span class="chap-head" style="cursor:default"><span class="chap-no">'+(gi+1)+'</span><span class="chap-title"><span class="ct">'+esc(g.t)+'</span><span class="mini"><span style="width:'+(tot?sum/tot*100:0)+'%"></span></span></span><span class="chap-count">'+sum+'/'+tot+'</span></span></h2>'+
-      '<p class="group-hint">'+esc(g.hint)+'</p><ul>';
+      '<p class="group-hint">'+esc(T(g.hint))+'</p><ul>';
     g.items.forEach(function(it){
       var v=state.col[it[0]]||0;
       h+='<li class="'+(v>=it[2]?"full":"")+'"><div class="ctr"><label for="n-'+it[0]+'" class="m-name">'+esc(it[1])+'</label>'+
@@ -515,6 +526,7 @@ document.addEventListener("click",function(e){
   if(b.id==="home"){try{history.replaceState(null,"",location.pathname+location.search);}catch(err){}location.reload();return;}
   if(b.id==="setBtn"){go(view()==="options"?"missions":"options");return;}
   if(b.id==="doneBtn"){go("missions");return;}
+  if(d.plat){set.platform=d.plat;saveSet();renderTabs();renderBars();renderExtras();return;}
   if(d.themeSet){set.theme=d.themeSet;saveSet();applyTheme();renderSettings();return;}
   if(d.tab){go(d.tab);return;}
   if(d.f){ui.filter=d.f;saveUI();renderControls();renderList();return;}
