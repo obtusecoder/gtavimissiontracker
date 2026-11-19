@@ -3,35 +3,63 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Free GTA VI checklist: tick off every story mission, side mission, trophy and collectible, with progress bars and a spoiler-free mode.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="GTA VI Mission Tracker">
+<meta property="og:title" content="GTA VI Mission Tracker">
+<meta property="og:description" content="Free GTA VI checklist: tick off every story mission, side mission, trophy and collectible, with progress bars and a spoiler-free mode.">
+<meta property="og:url" content="https://obtusecoder.github.io/gtavimissiontracker/">
+<meta property="og:image" content="https://obtusecoder.github.io/gtavimissiontracker/preview.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="GTA VI Mission Tracker: checklist with progress bars">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="GTA VI Mission Tracker">
+<meta name="twitter:description" content="Free GTA VI checklist: tick off every story mission, side mission, trophy and collectible, with progress bars and a spoiler-free mode.">
+<meta name="twitter:image" content="https://obtusecoder.github.io/gtavimissiontracker/preview.png">
+<meta name="theme-color" content="#e0357a">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' x2='1'%3E%3Cstop offset='0' stop-color='%23f08a3c'/%3E%3Cstop offset='1' stop-color='%23e0357a'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='url(%23g)'/%3E%3Cpath d='M17 33l10 10 20-22' fill='none' stroke='%23fff' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <style>:root{color-scheme:light;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
 <body>
 <title>GTA VI Mission Tracker</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
 <style>
-/* Layout: a single scrolling run-sheet — sticky progress header, then chapter "reels" of mission rows */
+/* Layout: a single scrolling run-sheet — progress header with tabs, then chapter "reels" of mission rows */
 :root{
   --bg:#f6f2f4; --surface:#ffffff; --ink:#1d1a22; --muted:#6c6474; --line:#e4dbe2;
-  --pink:#e0357a; --sun:#f08a3c; --teal:#0f8f8a; --done:#9a93a0; --track:#ece4ea;
+  --pink:#e0357a; --sun:#c96a1f; --teal:#0f8f8a; --done:#9a93a0; --track:#ece4ea;
+  --plat:#5b7fa8; --gold:#b8891a; --silver:#8a8f98; --bronze:#a7623a;
   --display:"Anton","Impact","Arial Narrow",sans-serif;
   --body:"Barlow",system-ui,sans-serif;
   --mono:"JetBrains Mono",ui-monospace,monospace;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --bg:#141019; --surface:#1e1825; --ink:#f3edf5; --muted:#a79cb0; --line:#2f2638;
-  --pink:#ff5c9b; --sun:#ffa25c; --teal:#3cc7bf; --done:#6d6375; --track:#2b2333; color-scheme:dark}}
+  --pink:#ff5c9b; --sun:#ffa25c; --teal:#3cc7bf; --done:#6d6375; --track:#2b2333;
+  --plat:#9cc3ef; --gold:#f2c14e; --silver:#c3c8d0; --bronze:#e0956a; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#141019; --surface:#1e1825; --ink:#f3edf5; --muted:#a79cb0; --line:#2f2638;
-  --pink:#ff5c9b; --sun:#ffa25c; --teal:#3cc7bf; --done:#6d6375; --track:#2b2333; color-scheme:dark}
+  --pink:#ff5c9b; --sun:#ffa25c; --teal:#3cc7bf; --done:#6d6375; --track:#2b2333;
+  --plat:#9cc3ef; --gold:#f2c14e; --silver:#c3c8d0; --bronze:#e0956a; color-scheme:dark}
 body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.4}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
 .wrap{max-width:820px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
-header .wrap{padding-block:16px 14px;display:grid;gap:12px}
-.top{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}
+header .wrap{padding-block:16px 12px;display:grid;gap:12px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.top-right{display:flex;gap:10px;align-items:center}
 h1{font-family:var(--display);font-weight:400;font-size:clamp(28px,6vw,40px);letter-spacing:.01em;line-height:1;margin:0;text-transform:uppercase}
 h1 span{background:linear-gradient(90deg,var(--sun),var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent}
 .status{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.btn{font:inherit;font-size:13px;font-weight:600;padding:6px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);cursor:pointer}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--pink);border-color:var(--pink);color:#fff}
+.btn.small{font-size:12px;padding:3px 9px}
+.btn[aria-expanded="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:-12px}
+.tabs button{font:inherit;font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:.06em;padding:8px 12px;border:0;border-bottom:3px solid transparent;background:none;color:var(--muted);cursor:pointer}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--pink)}
 .bars{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media (max-width:520px){.bars{grid-template-columns:1fr}}
 .bar-label{display:flex;justify-content:space-between;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600;margin-bottom:5px}
@@ -40,18 +68,52 @@ h1 span{background:linear-gradient(90deg,var(--sun),var(--pink));-webkit-backgro
 .fill{height:100%;width:0;border-radius:6px;background:linear-gradient(90deg,var(--sun),var(--pink));transition:width .35s ease}
 .fill.teal{background:var(--teal)}
 .controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+#missionsView{display:grid;gap:18px}
+main .wrap,#missionsView,#list,.xwrap{grid-template-columns:minmax(0,1fr)}
+section{min-width:0}
+#warnings:empty{display:none}
 .seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
 .seg button{font:inherit;font-size:13px;font-weight:600;padding:6px 11px;border:0;background:transparent;color:var(--muted);cursor:pointer}
 .seg button[aria-pressed="true"]{background:var(--ink);color:var(--surface)}
 .controls label{font-size:13px;color:var(--muted);display:flex;gap:6px;align-items:center;cursor:pointer}
-input[type=search]{font:inherit;font-size:14px;padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);flex:1;min-width:140px}
-main .wrap{padding-block:18px 48px;display:grid;gap:22px}
+input[type=search],textarea,input[type=number]{font:inherit;font-size:14px;padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+input[type=search]{flex:1;min-width:140px}
+main .wrap{display:grid;gap:22px}
+main .wrap.body{padding-block:18px 48px}
+.note{border:1px solid var(--sun);border-left-width:4px;border-radius:8px;padding:10px 14px;font-size:14px;line-height:1.45;background:var(--surface)}
+.note b{color:var(--sun)}
+.note .checked{display:block;margin-top:4px;font-family:var(--mono);font-size:12px;color:var(--muted)}
+/* settings */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;gap:18px}
+.panel h2{font-family:var(--display);font-weight:400;font-size:20px;text-transform:uppercase;letter-spacing:.02em;margin:0}
+.panel h3{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 8px}
+.switches{display:grid;gap:10px}
+.sw{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start;cursor:pointer}
+.sw input{appearance:none;width:38px;height:22px;border-radius:11px;background:var(--track);border:1px solid var(--line);position:relative;margin:2px 0 0;cursor:pointer;transition:background .2s}
+.sw input::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--muted);transition:transform .2s,background .2s}
+.sw input:checked{background:var(--pink);border-color:var(--pink)}
+.sw input:checked::after{transform:translateX(16px);background:#fff}
+.sw b{display:block;font-size:14px}
+.sw small{display:block;color:var(--muted);font-size:13px}
+.backup{display:grid;gap:8px}
+.backup textarea{width:100%;box-sizing:border-box;font-family:var(--mono);font-size:12px;min-height:64px;resize:vertical}
+.row-btns{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.msg{font-size:13px;color:var(--muted)}
+.msg.err{color:var(--pink)}
+/* warnings */
+.warn{border:1px solid var(--pink);border-left-width:4px;border-radius:8px;padding:10px 14px;background:var(--surface);display:grid;gap:6px}
+.warn h2{font-size:13px;text-transform:uppercase;letter-spacing:.08em;margin:0;color:var(--pink)}
+.warn ul{border:0;border-radius:0;background:none;display:grid;gap:4px}
+.warn li{border:0;font-size:14px}
+.linkish{font:inherit;font-weight:700;color:var(--ink);background:none;border:0;padding:0;text-decoration:underline;text-underline-offset:2px;cursor:pointer}
+/* chapters + rows */
 section{display:grid;gap:8px}
-.chap-head{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;cursor:pointer;user-select:none;border:0;background:none;color:inherit;font:inherit;text-align:left;padding:0}
+.chap-head{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;cursor:pointer;user-select:none;border:0;background:none;color:inherit;font:inherit;text-align:left;padding:0;width:100%}
 .chap-no{font-family:var(--display);font-size:30px;line-height:1;color:var(--pink);min-width:2ch}
 .chap-title{min-width:0}
 .chap-h{margin:0;font:inherit}
 .chap-title .ct{display:block;font-family:var(--display);font-weight:400;font-size:21px;letter-spacing:.02em;text-transform:uppercase;margin:0;line-height:1.1;text-wrap:balance}
+.chap-title .ct.secret{color:var(--muted)}
 .chap-title .mini{display:block;margin-top:6px;height:5px;background:var(--track);border-radius:3px;overflow:hidden}
 .chap-title .mini span{display:block;height:100%;background:var(--pink);transition:width .35s ease}
 .chap-count{font-family:var(--mono);font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;display:flex;gap:8px;align-items:center}
@@ -61,35 +123,59 @@ section.closed ul{display:none}
 ul{list-style:none;margin:0;padding:0;background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden}
 li{border-top:1px solid var(--line)}
 li:first-child{border-top:0}
-li label{display:grid;grid-template-columns:22px 1fr auto;gap:12px;align-items:center;padding:10px 14px;cursor:pointer}
-li label:hover{background:var(--bg)}
-input[type=checkbox]{appearance:none;width:20px;height:20px;border:2px solid var(--muted);border-radius:5px;margin:0;display:grid;place-items:center;cursor:pointer;background:transparent}
-input[type=checkbox]:checked{background:var(--pink);border-color:var(--pink)}
-input[type=checkbox]:checked::after{content:"";width:5px;height:10px;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:translateY(-1px) rotate(45deg)}
-input:focus-visible,button:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
-.m-name{font-weight:600;min-width:0}
-.m-note{display:block;font-weight:400;font-size:13px;color:var(--muted)}
+.row{display:grid;grid-template-columns:22px 1fr auto auto;gap:12px;align-items:center;padding:10px 14px}
+.row:hover{background:var(--bg)}
+.row label{cursor:pointer;min-width:0}
+li.flash .row{animation:flash 1.6s ease}
+@keyframes flash{0%,40%{background:color-mix(in srgb,var(--pink) 18%,transparent)}100%{background:transparent}}
+input[type=checkbox]:not(.swc){appearance:none;width:20px;height:20px;border:2px solid var(--muted);border-radius:5px;margin:0;display:grid;place-items:center;cursor:pointer;background:transparent}
+input[type=checkbox]:not(.swc):checked{background:var(--pink);border-color:var(--pink)}
+input[type=checkbox]:not(.swc):checked::after{content:"";width:5px;height:10px;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:translateY(-1px) rotate(45deg)}
+input:focus-visible,button:focus-visible,textarea:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.m-name{font-weight:600;display:block}
+.m-sub{display:block;font-weight:400;font-size:13px;color:var(--muted)}
+.m-mine{display:block;font-weight:500;font-size:13px;color:var(--teal);white-space:pre-wrap;overflow-wrap:anywhere}
+.m-mine::before{content:"Note: ";font-weight:700}
 li.is-done .m-name{color:var(--done);text-decoration:line-through;text-decoration-thickness:1.5px}
+li.secret .m-name{color:var(--muted);font-style:italic;font-weight:500}
 .tags{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
 .tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:2px 7px;border-radius:4px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
 .tag.opt{color:var(--teal);border-color:var(--teal)}
 .tag.miss{color:var(--sun);border-color:var(--sun)}
 .tag.sf{color:var(--pink);border-color:var(--pink)}
-main .wrap.notewrap{padding-block:16px 0}
-.note{border:1px solid var(--sun);border-left-width:4px;border-radius:8px;padding:10px 14px;font-size:14px;line-height:1.45;background:var(--surface)}
-.note b{color:var(--sun)}
-.note .checked{display:block;margin-top:4px;font-family:var(--mono);font-size:12px;color:var(--muted)}
+.tag.g-P{color:var(--plat);border-color:var(--plat)}.tag.g-G{color:var(--gold);border-color:var(--gold)}.tag.g-S{color:var(--silver);border-color:var(--silver)}.tag.g-B{color:var(--bronze);border-color:var(--bronze)}
+.nb{font:inherit;font-size:12px;font-weight:600;color:var(--muted);background:none;border:1px solid transparent;border-radius:6px;padding:3px 7px;cursor:pointer}
+.nb:hover{border-color:var(--line);color:var(--ink)}
+.editor{display:grid;gap:8px;padding:0 14px 12px 48px}
+.editor textarea{width:100%;box-sizing:border-box;min-height:60px;resize:vertical}
+.hidden-row{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;padding:10px 14px;color:var(--muted);font-size:14px}
 .empty{padding:14px;color:var(--muted);font-size:14px}
+/* collectibles */
+.ctr{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:10px 14px}
+.ctr .m-name{font-weight:600}
+.stepper{display:flex;align-items:center;gap:6px}
+.stepper button{font:inherit;font-weight:700;width:30px;height:30px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink);cursor:pointer}
+.stepper input{width:64px;text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;padding:5px 6px}
+.stepper .of{font-family:var(--mono);font-size:13px;color:var(--muted);min-width:4.5ch;font-variant-numeric:tabular-nums}
+li.full .m-name{color:var(--teal)}
+.group-hint{font-size:13px;color:var(--muted);margin:0}
 footer{font-size:12px;color:var(--muted);text-align:center}
-.reset{font:inherit;font-size:12px;background:none;border:1px solid var(--line);color:var(--muted);border-radius:6px;padding:4px 10px;cursor:pointer}
-@media (max-width:520px){header{position:static}li label{grid-template-columns:22px 1fr}.tags{grid-column:2;justify-content:flex-start}}
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media (max-width:520px){
+  header{position:static}
+  .row{grid-template-columns:22px 1fr auto}
+  .row .tags{grid-column:2;grid-row:2;justify-content:flex-start}
+  .row .nb{grid-column:3;grid-row:1}
+  .editor{padding-left:14px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 <div id="app"></div>
-<script type="application/json" id="state">{"done":{}}</script>
+<script type="application/json" id="state">{"v":2,"done":{},"notes":{},"trophies":{},"col":{}}</script>
 <script id="main">
 (function(){
-// [name, note, kind, who]  kind: m=story, o=optional, x=optional+missable, s=Strangers & Freaks
+// ---------- DATA ----------
+// Missions: [name, note, kind, who, startChapter]  kind: m=story, o=optional, x=optional+missable, s=Strangers & Freaks
+// startChapter is only used for the extra side-mission section (which chapter the questline opens in).
 var CH=[
 {id:"p",no:"P",title:"Prologue",ms:[["Prologue","Lucia in Leonida Penitentiary","m","Lucia"]]},
 {id:"c1",no:"1",title:"Just Like Paradise",ms:[
@@ -103,44 +189,152 @@ var CH=[
 {id:"c5",no:"5",title:"Top of the World, Ma",ms:[
 ["Bird in the Hand","","m",""],["Taking Liberties","","m",""],["Doggie Bag","Meet Vinny","m",""],["VC Baby","Talk to Mattia","m",""],["Operation Savage Glory","","m",""],["Honest Abe","Negotiate a deal with Abe","m",""],["Unfinished Business","","m",""],["Pay Abe's Fee","","m",""],["Protective Custody","Meet with Abe","m",""],["The End of the Road","Final mission","m",""]]},
 {id:"sf",no:"S",title:"Strangers & Freaks · more side missions",ms:[
-["Search for the Skunk Ape","Kirk · night only","s",""],["Search for Tree Effigies","Kirk","s",""],["Help Kirk Find Mr. Mangrove","Kirk · night only","s","Lucia"],["Steal Vehicles for Moses","Moses","s",""],["Bret's Hunting Decks","Bret · trophy: Fair Game","s","Jason"],["The Impaler","Billy","s",""],["Hometown Heroes","Billy · trophy: The Lone Rider","s",""],["Climbing the Cellerichain (Parts 1–3)","Andy","s","Lucia"],["Pay the Cellerica Fee","Andy","s","Lucia"],["Peach!","Andy","s","Lucia"],["Read the Label","Andy","s","Lucia"],["Puff Puff Pass","Andy · trophy: Road to Rehabilitation","s","Lucia"],["Yasmani's ATM Jobs","Yasmani","s",""],["Yasmani's Payday Loans Jobs","Yasmani","s",""],["Tail the Security Van","Yasmani","s",""],["Randy's Wish List","Randy · trophy: Supply & Demand","s",""],["Take Out Kitty Litter","Tyrone","s",""],["Spin On This","Tyrone · trophy: Spin On This!","s",""],["Dunk's Robbery Tips","Dunk","s",""],["The Last Mile: Passing the Torch","Pilot Pete","s","Jason"],["The Last Mile: Backseat Pilot","Pilot Pete","s","Jason"],["Pete's Deliveries: Southpoint Airfield","Pilot Pete","s","Jason"],["Pete's Deliveries: Avery Allen & Co.","Pilot Pete","s","Jason"],["Deliver Packages","Pilot Pete","s","Jason"]]}
+["Search for the Skunk Ape","Kirk · night only","s","","c1"],["Search for Tree Effigies","Kirk","s","","c1"],["Help Kirk Find Mr. Mangrove","Kirk · night only","s","Lucia","c1"],["Steal Vehicles for Moses","Moses","s","","c2"],["Bret's Hunting Decks","Bret · trophy: Fair Game","s","Jason","c2"],["The Impaler","Billy","s","","c2"],["Hometown Heroes","Billy · trophy: The Lone Rider","s","","c2"],["Climbing the Cellerichain (Parts 1–3)","Andy","s","Lucia","c3"],["Pay the Cellerica Fee","Andy","s","Lucia","c3"],["Peach!","Andy","s","Lucia","c3"],["Read the Label","Andy","s","Lucia","c3"],["Puff Puff Pass","Andy · trophy: Road to Rehabilitation","s","Lucia","c3"],["Yasmani's ATM Jobs","Yasmani","s","","c3"],["Yasmani's Payday Loans Jobs","Yasmani","s","","c3"],["Tail the Security Van","Yasmani","s","","c3"],["Randy's Wish List","Randy · trophy: Supply & Demand","s","","c3"],["Take Out Kitty Litter","Tyrone","s","","c3"],["Spin On This","Tyrone · trophy: Spin On This!","s","","c3"],["Dunk's Robbery Tips","Dunk","s","","c3"],["The Last Mile: Passing the Torch","Pilot Pete","s","Jason","c4"],["The Last Mile: Backseat Pilot","Pilot Pete","s","Jason","c4"],["Pete's Deliveries: Southpoint Airfield","Pilot Pete","s","Jason","c4"],["Pete's Deliveries: Avery Allen & Co.","Pilot Pete","s","Jason","c4"],["Deliver Packages","Pilot Pete","s","Jason","c4"]]}
 ];
-CH.forEach(function(c){c.ms=c.ms.map(function(m,i){return{id:c.id+"-"+(i+1),name:m[0],note:m[1],kind:m[2],who:m[3]};});});
+// Trophies: [name, grade P/G/S/B, how to unlock, hidden in-game]
+var TR=[
+["Vice Got a Price!","P","Earn all other trophies",0],["A Long Road","G","Reach 100% completion",0],["You Gotta Know When to Get Off","G","Complete the final mission",1],
+["Cunning Stunts","S","Complete 250 stunts",0],["The Shootist","S","Earn gold medals in every Shooting Range challenge",0],["Maximum Withdrawal","S","Rob 5 bank vaults and escape",0],["Strangers & Freaks","S","Complete 8 Strangers & Freaks questlines",0],["Don't Touch My Deck","S","Complete 3 Collectible Card sets",0],["You WAiNKer!","S","WAiNK it at 100 locations",0],
+["Just Like Paradise","B","Complete Gone Fishing",1],["Paradise Lost","B","Complete Chapter 1",1],["Tits Ass Drug Money","B","Complete Chapter 2",1],["Vice City, Baby!","B","Complete Chapter 3",1],["Top of the World, Ma","B","Complete Chapter 4",1],["Trust","B","Complete Breakfast Run",1],["Break the Bank","B","Complete The Cartel Heist",1],["Family Matters","B","Complete Child's Play",1],["DWNFALL","B","Complete Headliners",1],["Hi-Jacked","B","Complete VCIA Takedown",1],["Snow Storm","B","Complete Operation Savage Glory",1],
+["Road to Rehabilitation","B","Finish Andy's questline",1],["This Was No Boat Accident","B","Finish Kenton's questline",1],["The Lone Rider","B","Finish Billy's questline",1],["Supply & Demand","B","Finish Randy's questline",1],["Spin On This!","B","Finish Tyrone's questline",1],["Fair Game","B","Hunt a unique animal for Bret",1],
+["Master of None","B","Try every type of activity once",0],["Top Fun","B","Win a Top Fun drone race at every location",0],["Earn Cash, Not Kudos","B","Win 20 different races",0],["Baited My Tackle","B","Beat Cal in a fishing challenge",0],["Stick Fiddler","B","Complete an arcade game",0],["Positive Mental Attitude","B","Meditate at all 18 spots across Leonida",0],["One Last Thing","B","Complete 50 Challenges",0],["Hot Together","B","Lose a 4-star wanted level with a partner",0],["Retail Therapy","B","Rob 3 shops back to back with a partner without losing your wanted level",0],["Sneakthief","B","Rob a jewelry store without being detected",0],["A Classic Blitz Play","B","Rob an armored truck and escape",0],["Pest Control","B","Rob an illegal operation belonging to each gang",0],["Dime on the Dollar","B","Launder $250,000 of marked bills",0],["Gunslinger","B","Take down 5 enemies in one use of Combat Focus",0],["The Goodtime State","B","Explore all of Leonida",0],["Whip It Good","B","Discover 100 vehicles",0],["Little Boxes","B","Buy every garage property",0],["On the Spot","B","Register 10 vehicles on the Scooter Bros app",0],["Treat Yo Self","B","Spend $100,000 across all shops",0],
+["Catch Me If You Can","B","Make an unscheduled departure at VCIA",1],["Challenging Tank","B","Requirement not confirmed yet (involves a Rhino tank)",1],["In The Beginning...","B","Enjoy a cocktail with a view on Ocean Beach",1],["Capital Offense","B","Smash out of a vehicle showroom",1],["Let's Go Bowling","B","Follow through at the Kolt & Associates bowling alley",1],["Personal Best","B","Requirement not confirmed yet",1],["Actions Speak Louder","B","Requirement not confirmed yet",1],["Bad Luck, I Guess","B","Requirement not confirmed yet",1],["The Truth Is Out There","B","Requirement not confirmed yet",1],["Ten Pin","B","Bowl enemies over with a melee drive-by",1]
+];
+var GRADE={P:"Platinum",G:"Gold",S:"Silver",B:"Bronze"};
+// Collectibles: groups of [key, name, total, needed for 100% (null = not counted)]; group.need overrides with a group total
+var COL=[
+{t:"Cocaine Flamingos",hint:"100 of 125 needed for 100%.",items:[["flamingos","Flamingos destroyed",125,100]]},
+{t:"Collectible Cards",hint:"15 of 18 sets needed for 100%. Trophy: Don't Touch My Deck (3 sets).",items:[["cards","Cards found",480,null],["cardsets","Sets completed",18,15]]},
+{t:"WAiNK Scans",hint:"100 of 112 needed for 100%. Trophy: You WAiNKer! (100).",need:100,items:[["wk_land","Landmarks",31],["wk_cur","Curiosities",35],["wk_sculp","Sculptures",23],["wk_tags","No Flusher tags",23]]},
+{t:"Discovered Styles",hint:"70 of 79 needed for 100%.",need:70,items:[["st_jt","Jason's magazine tattoos",13],["st_lt","Lucia's magazine tattoos",15],["st_mt","Magazine tattoos",17],["st_w","Luxury watches",34]]},
+{t:"Treasure Diving",hint:"5 of 7 Kenton sets and all 33 underwater discoveries needed for 100%.",items:[["dive_sets","Kenton diving sets",7,5],["dive_finds","Underwater discoveries",33,33]]},
+{t:"Magazines, Books & Comics",hint:"30 of 34 needed for 100%.",need:30,items:[["mags","Magazines, books & comics",27],["swaps","Book swaps",7]]},
+{t:"Meditation Spots",hint:"15 of 18 needed for 100%. All 18 for Positive Mental Attitude.",items:[["meditate","Spots meditated at",18,15]]},
+{t:"Animals",hint:"100 of 255 needed for 100%.",items:[["animals","Animals found",255,100]]},
+{t:"Stunts",hint:"Not needed for 100%. Trophy: Cunning Stunts (250).",optional:1,items:[["stunt_jump","Stunt jumps",130],["stunt_bridge","Under the bridges",202],["stunt_knife","Knife flights",40],["stunt_base","Base jumps",25]]}
+];
 
-var state={done:{}};
-try{var s=JSON.parse(document.getElementById("state").textContent);if(s&&s.done)state=s;}catch(e){}
-var LS="gta6-tracker-v1";
-var ui={filter:"all",hideDone:false,q:"",closed:{}};
-try{var u=JSON.parse(localStorage.getItem(LS+"-ui")||"null");if(u){ui.filter=u.filter||"all";ui.hideDone=!!u.hideDone;ui.closed=u.closed||{};}}catch(e){}
-var self=null, pubTimer=null, statusText="Saved locally";
+function slug(t){return String(t).toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");}
+var LEGACY={}, ORDER=[], BYID={}, CHMAP={};
+CH.forEach(function(c){
+  CHMAP[c.id]=c;
+  c.ms=c.ms.map(function(m,i){
+    var o={id:c.id+":"+slug(m[0]),name:m[0],note:m[1],kind:m[2],who:m[3],start:m[4]||null,ch:c.id};
+    LEGACY[c.id+"-"+(i+1)]=o.id; BYID[o.id]=o;
+    if(c.id!=="sf"){o.idx=ORDER.length;ORDER.push(o);}
+    return o;
+  });
+});
+TR=TR.map(function(t){return{id:"t:"+slug(t[0]),name:t[0],g:t[1],how:t[2],hid:!!t[3]};});
 
-function saveUI(){try{localStorage.setItem(LS+"-ui",JSON.stringify({filter:ui.filter,hideDone:ui.hideDone,closed:ui.closed}));}catch(e){}}
-function esc(t){return String(t).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+// ---------- STATE ----------
+function blank(){return{v:2,done:{},notes:{},trophies:{},col:{}};}
+function normalize(s){
+  var o=blank();if(!s||typeof s!=="object")return o;
+  ["done","notes","trophies","col"].forEach(function(k){if(s[k]&&typeof s[k]==="object")o[k]=s[k];});
+  // v1 used positional ids like "c3-12"; move them to name-based ids
+  Object.keys(o.done).forEach(function(k){if(LEGACY[k]){o.done[LEGACY[k]]=1;delete o.done[k];}});
+  Object.keys(o.notes).forEach(function(k){if(LEGACY[k]){o.notes[LEGACY[k]]=o.notes[k];delete o.notes[k];}});
+  return o;
+}
+function hasProgress(s){return Object.keys(s.done).length||Object.keys(s.notes).length||Object.keys(s.trophies).length||Object.keys(s.col).some(function(k){return s.col[k]>0;});}
+var state=blank();
+try{state=normalize(JSON.parse(document.getElementById("state").textContent));}catch(e){}
+var LS="gta6-tracker-v1", LSUI=LS+"-ui", LSSET="gta6-tracker-settings";
+function lsGet(k){try{return JSON.parse(localStorage.getItem(k)||"null");}catch(e){return null;}}
+function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+var DEF={spoilers:true,missables:true,notes:true,character:true,extras:true};
+var set=Object.assign({},DEF,lsGet(LSSET)||{});
+var ui=Object.assign({filter:"all",who:"all",hideDone:false,closed:{},tab:"missions"},lsGet(LSUI)||{});
+ui.q="";ui.editing=null;ui.settingsOpen=false;
+var peek={}, peekCh={}, peekTr={};
+var pub=null, pubTimer=null, statusText="";
+function saveUI(){lsSet(LSUI,{filter:ui.filter,who:ui.who,hideDone:ui.hideDone,closed:ui.closed,tab:ui.tab});}
+function saveSet(){lsSet(LSSET,set);}
+function esc(t){return String(t).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+function norm(t){return String(t).toLowerCase().replace(/[^a-z0-9 ]+/g,"").replace(/\s+/g," ");}
 
+// ---------- SPOILER LOGIC ----------
+// Revealed: everything up to your furthest ticked mission, plus up to and including the next story mission.
+function limit(){
+  var far=-1;ORDER.forEach(function(m){if(state.done[m.id])far=m.idx;});
+  var lim=far;for(var i=far+1;i<ORDER.length;i++){lim=i;if(ORDER[i].kind==="m")break;}
+  return lim;
+}
+var LIM=0;
+function chReached(cid){return !set.spoilers||CHMAP[cid].ms[0].idx<=LIM;}
+function revealed(m){
+  if(!set.spoilers||state.done[m.id]||peek[m.id]||peekCh[m.ch])return true;
+  if(m.idx!==undefined)return m.idx<=LIM;
+  return chReached(m.start);
+}
+function chFinished(cid){var st=CHMAP[cid].ms.filter(function(m){return m.kind==="m";});return st.length&&state.done[st[st.length-1].id];}
+
+// ---------- SHELL ----------
 var app=document.getElementById("app");
 app.innerHTML=
 '<header><div class="wrap">'+
- '<div class="top"><h1>GTA VI <span>Missions</span></h1><div class="status" id="status" aria-live="polite"></div></div>'+
- '<div class="bars">'+
-  '<div><div class="bar-label">Story missions <b id="storyTxt"></b></div><div class="track" role="progressbar" aria-label="Story progress" id="storyBar"><div class="fill" id="storyFill"></div></div></div>'+
-  '<div><div class="bar-label">Everything <b id="allTxt"></b></div><div class="track" role="progressbar" aria-label="Overall progress" id="allBar"><div class="fill teal" id="allFill"></div></div></div>'+
- '</div>'+
- '<div class="controls">'+
-  '<div class="seg" role="group" aria-label="Show"><button data-f="all">All</button><button data-f="story">Story</button><button data-f="side">Side</button></div>'+
-  '<label><input type="checkbox" id="hideDone"> Hide completed</label>'+
-  '<input type="search" id="q" placeholder="Search missions">'+
- '</div>'+
+ '<div class="top"><h1>GTA VI <span>Tracker</span></h1><div class="top-right"><span class="status" id="status" aria-live="polite"></span><button class="btn" id="setBtn" aria-expanded="false" aria-controls="settings">Settings</button></div></div>'+
+ '<div class="bars" id="bars"></div>'+
+ '<div class="tabs" role="tablist" id="tabs"><button role="tab" data-tab="missions">Missions</button><button role="tab" data-tab="extras">Trophies &amp; Collectibles</button></div>'+
 '</div></header>'+
-'<main><div class="wrap notewrap"><div class="note" role="note"><b>Heads up:</b> this list was put together from community guides published in GTA VI\'s launch week, so it may not be 100% accurate. Guides disagree on which small objectives count as missions, some missions can appear in a different order, and side missions are still being discovered. The list is checked against the latest guides weekly. <span class="checked">Last checked: 19 Nov 2026</span></div></div><div class="wrap" id="list"></div><div class="wrap"><footer><p>Story order from launch-week guides; a few side missions may appear in a different order in your game.</p><button class="reset" id="reset">Reset all progress</button> <span id="resetConfirm" hidden><button class="reset" id="resetYes">Yes, clear every tick</button> <button class="reset" id="resetNo">Cancel</button></span></footer></div></main>';
+'<main><div class="wrap body">'+
+ '<div class="note" role="note"><b>Heads up:</b> this list was put together from community guides published in GTA VI\'s launch week, so it may not be 100% accurate. Guides disagree on which small objectives count as missions, some missions can appear in a different order, and side missions are still being discovered. The list is checked against the latest guides weekly. <span class="checked">Last checked: 19 Nov 2026</span></div>'+
+ '<div class="panel" id="settings" hidden></div>'+
+ '<div id="missionsView"><div class="controls" id="controls"></div><div id="warnings"></div><div id="list" style="display:grid;gap:22px"></div></div>'+
+ '<div id="extrasView" hidden></div>'+
+ '<footer><p>Story order from launch-week guides; a few side missions may appear in a different order in your game.</p></footer>'+
+'</div></main>';
+var $=function(id){return document.getElementById(id);};
 
-var list=document.getElementById("list");
-function norm(t){return String(t).toLowerCase().replace(/[^a-z0-9 ]+/g,"").replace(/\s+/g," ");}
-function isStory(m){return m.kind==="m";}
-function visible(m){
-  if(ui.filter==="story"&&!isStory(m))return false;
-  if(ui.filter==="side"&&isStory(m))return false;
+function bar(label,d,n,cls,aria){
+  var p=n?Math.round(d/n*100):0;
+  return '<div><div class="bar-label">'+label+' <b>'+d+'/'+n+' · '+p+'%</b></div><div class="track" role="progressbar" aria-label="'+aria+'" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+p+'"><div class="fill '+(cls||"")+'" style="width:'+(n?d/n*100:0)+'%"></div></div></div>';
+}
+function colNeed(){
+  var got=0,need=0;
+  COL.forEach(function(g){
+    if(g.optional)return;
+    if(g.need){var s=0;g.items.forEach(function(it){s+=Math.min(state.col[it[0]]||0,it[2]);});got+=Math.min(s,g.need);need+=g.need;}
+    else g.items.forEach(function(it){if(it[3]){got+=Math.min(state.col[it[0]]||0,it[3]);need+=it[3];}});
+  });
+  return[got,need];
+}
+function renderBars(){
+  var h;
+  if(ui.tab==="extras"&&set.extras){
+    var t=TR.filter(function(x){return state.trophies[x.id];}).length, c=colNeed();
+    h=bar("Trophies",t,TR.length,"","Trophy progress")+bar("Collectibles for 100%",c[0],c[1],"teal","Collectible progress");
+  }else{
+    var all=0,ad=0,st=0,sd=0;
+    CH.forEach(function(ch){ch.ms.forEach(function(m){all++;if(state.done[m.id])ad++;if(m.kind==="m"){st++;if(state.done[m.id])sd++;}});});
+    h=bar("Story missions",sd,st,"","Story progress")+bar("Everything",ad,all,"teal","Overall progress");
+  }
+  $("bars").innerHTML=h;
+}
+function renderTabs(){
+  $("tabs").hidden=!set.extras;
+  if(!set.extras)ui.tab="missions";
+  Array.prototype.forEach.call($("tabs").querySelectorAll("button"),function(b){b.setAttribute("aria-selected",b.dataset.tab===ui.tab);});
+  $("missionsView").hidden=ui.tab!=="missions";
+  $("extrasView").hidden=ui.tab!=="extras";
+}
+function renderControls(){
+  var h='<div class="seg" role="group" aria-label="Mission type">'+
+    ['all','All','story','Story','side','Side'].reduce(function(a,v,i,arr){return i%2?a:a+'<button data-f="'+v+'" aria-pressed="'+(ui.filter===v)+'">'+arr[i+1]+'</button>';},"")+'</div>';
+  if(set.character)h+='<div class="seg" role="group" aria-label="Character">'+
+    ['all','Anyone','Jason','Jason','Lucia','Lucia'].reduce(function(a,v,i,arr){return i%2?a:a+'<button data-w="'+v+'" aria-pressed="'+(ui.who===v)+'">'+arr[i+1]+'</button>';},"")+'</div>';
+  h+='<label><input type="checkbox" id="hideDone"'+(ui.hideDone?" checked":"")+'> Hide completed</label>'+
+     '<input type="search" id="q" placeholder="'+(set.spoilers?"Search missions you've reached":"Search missions")+'" value="'+esc(ui.q)+'">';
+  $("controls").innerHTML=h;
+}
+
+// ---------- MISSIONS ----------
+function passes(m){
+  if(ui.filter==="story"&&m.kind!=="m")return false;
+  if(ui.filter==="side"&&m.kind==="m")return false;
+  if(set.character&&ui.who!=="all"&&m.who!==ui.who&&m.who!=="Both")return false;
   if(ui.hideDone&&state.done[m.id])return false;
-  if(ui.q&&norm(m.name+" "+m.note).indexOf(ui.q)<0)return false;
   return true;
 }
 function tags(m){
@@ -151,100 +345,194 @@ function tags(m){
   if(m.who&&m.who!=="Both")t+='<span class="tag">'+m.who+'</span>';
   return t;
 }
-function render(){
-  var html="";
+function row(m){
+  var on=!!state.done[m.id], note=set.notes&&state.notes[m.id];
+  var h='<li id="row-'+esc(m.id)+'" class="'+(on?"is-done":"")+'"><div class="row"><input type="checkbox" id="cb-'+esc(m.id)+'" data-id="'+esc(m.id)+'"'+(on?" checked":"")+'>'+
+    '<label for="cb-'+esc(m.id)+'"><span class="m-name">'+esc(m.name)+'</span>'+(m.note?'<span class="m-sub">'+esc(m.note)+'</span>':"")+(note?'<span class="m-mine">'+esc(note)+'</span>':"")+'</label>'+
+    '<span class="tags">'+tags(m)+'</span>'+(set.notes?'<button class="nb" data-note="'+esc(m.id)+'" aria-label="'+(note?"Edit":"Add")+' note for '+esc(m.name)+'">'+(note?"Edit note":"Note")+'</button>':"<span></span>")+'</div>';
+  if(set.notes&&ui.editing===m.id)h+='<div class="editor"><textarea id="ed-'+esc(m.id)+'" aria-label="Note for '+esc(m.name)+'" placeholder="e.g. come back at night, needs Lucia">'+esc(state.notes[m.id]||"")+'</textarea><div class="row-btns"><button class="btn primary small" data-save="'+esc(m.id)+'">Save note</button><button class="btn small" data-cancel="1">Cancel</button>'+(state.notes[m.id]?'<button class="btn small" data-del="'+esc(m.id)+'">Delete note</button>':"")+'</div></div>';
+  return h+'</li>';
+}
+function renderWarnings(){
+  if(!set.missables){$("warnings").innerHTML="";return;}
+  LIM=limit();
+  var w=[];
+  CH.forEach(function(c){c.ms.forEach(function(m){
+    if(m.kind!=="x"||state.done[m.id]||!revealed(m)||chFinished(m.ch))return;
+    var when=/time-sensitive/i.test(m.note)?"It's time-sensitive, so do it as soon as it appears.":"You can miss it once Chapter "+CHMAP[m.ch].no+" ends.";
+    w.push('<li><button class="linkish" data-jump="'+esc(m.id)+'">'+esc(m.name)+'</button> · Chapter '+CHMAP[m.ch].no+'. '+when+'</li>');
+  });});
+  $("warnings").innerHTML=w.length?'<div class="warn" role="note"><h2>Missable</h2><ul>'+w.join("")+'</ul></div>':"";
+}
+function renderList(){
+  LIM=limit();
+  var html="", q=ui.q;
   CH.forEach(function(c){
-    var vis=c.ms.filter(visible);
-    if(!vis.length&&(ui.q||ui.hideDone||ui.filter!=="all"))return;
-    var d=c.ms.filter(function(m){return state.done[m.id];}).length, n=c.ms.length;
-    var shut=ui.closed[c.id]&&!ui.q;
-    html+='<section class="'+(shut?"closed":"")+'"><h2 class="chap-h"><button class="chap-head" data-c="'+c.id+'" aria-expanded="'+!shut+'">'+
-      '<span class="chap-no">'+c.no+'</span><span class="chap-title"><span class="ct">'+esc(c.title)+'</span><span class="mini"><span style="width:'+(n?d/n*100:0)+'%"></span></span></span>'+
-      '<span class="chap-count">'+d+'/'+n+' <span class="caret" aria-hidden="true">▾</span></span></button></h2><ul>';
-    if(!vis.length)html+='<li class="empty">Nothing to show here.</li>';
-    vis.forEach(function(m){
-      var on=!!state.done[m.id];
-      html+='<li class="'+(on?"is-done":"")+'"><label><input type="checkbox" id="m-'+m.id+'" data-id="'+m.id+'"'+(on?" checked":"")+'>'+
-        '<span class="m-name">'+esc(m.name)+(m.note?'<span class="m-note">'+esc(m.note)+'</span>':"")+'</span><span class="tags">'+tags(m)+'</span></label></li>';
+    var reached=c.id==="sf"||chReached(c.id)||peekCh[c.id];
+    var shown=[], hiddenN=0, firstHidden=null;
+    c.ms.forEach(function(m){
+      if(!passes(m))return;
+      if(revealed(m)){if(!q||norm(m.name+" "+m.note).indexOf(q)>=0)shown.push(m);}
+      else if(!q){hiddenN++;if(!firstHidden)firstHidden=m;}
     });
+    var filtering=q||ui.hideDone||ui.filter!=="all"||(set.character&&ui.who!=="all");
+    if(!shown.length&&(q||(filtering&&!hiddenN)))return;
+    var d=c.ms.filter(function(m){return state.done[m.id];}).length, n=c.ms.length;
+    var shut=ui.closed[c.id]&&!q;
+    html+='<section class="'+(shut?"closed":"")+'"><h2 class="chap-h"><button class="chap-head" data-c="'+c.id+'" aria-expanded="'+!shut+'">'+
+      '<span class="chap-no">'+c.no+'</span><span class="chap-title"><span class="ct'+(reached?"":" secret")+'">'+(reached?esc(c.title):"Chapter "+c.no+" · not reached yet")+'</span><span class="mini"><span style="width:'+(n?d/n*100:0)+'%"></span></span></span>'+
+      '<span class="chap-count">'+d+'/'+n+' <span class="caret" aria-hidden="true">▾</span></span></button></h2><ul>';
+    shown.forEach(function(m){html+=row(m);});
+    if(hiddenN)html+='<li class="secret"><div class="hidden-row"><span>'+hiddenN+(shown.length?" more":"")+' mission'+(hiddenN>1?"s":"")+' hidden to avoid spoilers</span><span class="row-btns"><button class="btn small" data-peek="'+esc(firstHidden.id)+'">Show next</button><button class="btn small" data-peekch="'+c.id+'">Show all</button></span></div></li>';
+    if(!shown.length&&!hiddenN)html+='<li class="empty">Nothing to show here.</li>';
     html+='</ul></section>';
   });
-  list.innerHTML=html||'<p class="empty">No missions match.</p>';
-  bars();
+  $("list").innerHTML=html||'<p class="empty">No missions match.</p>';
 }
-function bars(){
-  var all=0,ad=0,st=0,sd=0;
-  CH.forEach(function(c){c.ms.forEach(function(m){all++;if(state.done[m.id])ad++;if(isStory(m)){st++;if(state.done[m.id])sd++;}});});
-  function set(id,d,n){var p=n?Math.round(d/n*100):0;document.getElementById(id+"Fill").style.width=(n?d/n*100:0)+"%";document.getElementById(id+"Txt").textContent=d+"/"+n+" · "+p+"%";var b=document.getElementById(id+"Bar");b.setAttribute("aria-valuenow",p);b.setAttribute("aria-valuemin",0);b.setAttribute("aria-valuemax",100);}
-  set("story",sd,st);set("all",ad,all);
-  document.querySelectorAll(".seg button").forEach(function(b){b.setAttribute("aria-pressed",b.dataset.f===ui.filter);});
-  document.getElementById("hideDone").checked=ui.hideDone;
-  document.getElementById("status").textContent=statusText;
-}
-function setStatus(t){statusText=t;document.getElementById("status").textContent=t;}
 
+// ---------- TROPHIES & COLLECTIBLES ----------
+function renderExtras(){
+  if(!set.extras){$("extrasView").innerHTML="";return;}
+  var h='<section><h2 class="chap-h"><span class="chap-head" style="cursor:default"><span class="chap-no">T</span><span class="chap-title"><span class="ct">Trophies</span></span><span class="chap-count">'+TR.filter(function(x){return state.trophies[x.id];}).length+'/'+TR.length+'</span></span></h2><ul>';
+  TR.forEach(function(t){
+    var on=!!state.trophies[t.id], show=!set.spoilers||!t.hid||on||peekTr[t.id];
+    h+='<li class="'+(on?"is-done":"")+(show?"":" secret")+'"><div class="row"><input type="checkbox" id="cb-'+t.id+'" data-tr="'+t.id+'"'+(on?" checked":"")+'>'+
+      '<label for="cb-'+t.id+'"><span class="m-name">'+(show?esc(t.name):"Hidden trophy")+'</span><span class="m-sub">'+(show?esc(t.how):"Hidden to avoid spoilers")+'</span></label>'+
+      '<span class="tags"><span class="tag g-'+t.g+'">'+GRADE[t.g]+'</span></span>'+(show?"<span></span>":'<button class="nb" data-peektr="'+t.id+'">Show</button>')+'</div></li>';
+  });
+  h+='</ul></section>';
+  COL.forEach(function(g,gi){
+    var sum=0,tot=0;g.items.forEach(function(it){sum+=Math.min(state.col[it[0]]||0,it[2]);tot+=it[2];});
+    h+='<section><h2 class="chap-h"><span class="chap-head" style="cursor:default"><span class="chap-no">'+(gi+1)+'</span><span class="chap-title"><span class="ct">'+esc(g.t)+'</span><span class="mini"><span style="width:'+(tot?sum/tot*100:0)+'%"></span></span></span><span class="chap-count">'+sum+'/'+tot+'</span></span></h2>'+
+      '<p class="group-hint">'+esc(g.hint)+'</p><ul>';
+    g.items.forEach(function(it){
+      var v=state.col[it[0]]||0;
+      h+='<li class="'+(v>=it[2]?"full":"")+'"><div class="ctr"><label for="n-'+it[0]+'" class="m-name">'+esc(it[1])+'</label>'+
+        '<span class="stepper"><button data-step="'+it[0]+'" data-d="-1" aria-label="One fewer '+esc(it[1])+'">−</button><input type="number" id="n-'+it[0]+'" data-col="'+it[0]+'" min="0" max="'+it[2]+'" value="'+v+'" inputmode="numeric"><button data-step="'+it[0]+'" data-d="1" aria-label="One more '+esc(it[1])+'">+</button><span class="of">/'+it[2]+'</span></span></div></li>';
+    });
+    h+='</ul></section>';
+  });
+  $("extrasView").innerHTML='<div class="xwrap" style="display:grid;gap:22px">'+h+'</div>';
+}
+
+// ---------- SETTINGS, BACKUP ----------
+function renderSettings(){
+  var p=$("settings");p.hidden=!ui.settingsOpen;$("setBtn").setAttribute("aria-expanded",ui.settingsOpen);
+  if(!ui.settingsOpen)return;
+  var opts=[["spoilers","Spoiler-free mode","Hide mission names, chapter names and hidden trophies until you reach them."],
+    ["missables","Missable warnings","Show a reminder of missable missions before you can lose them."],
+    ["notes","Mission notes","Add your own note to any mission."],
+    ["character","Jason / Lucia filter","Show the character filter above the mission list."],
+    ["extras","Trophies & Collectibles tab","Track trophies and collectible counts."]];
+  p.innerHTML='<h2>Settings</h2><div><h3>Features</h3><div class="switches">'+opts.map(function(o){
+    return '<label class="sw"><input type="checkbox" class="swc" role="switch" id="set-'+o[0]+'" data-set="'+o[0]+'"'+(set[o[0]]?" checked":"")+'><span><b>'+o[1]+'</b><small>'+o[2]+'</small></span></label>';}).join("")+
+    '</div><p class="msg">These settings are saved in this browser.</p></div>'+
+    '<div class="backup"><h3>Backup &amp; restore</h3><p class="msg" style="margin:0">Copy your backup code to keep your progress safe or move it to another device or browser. It includes ticks, notes, trophies and collectibles.</p>'+
+    '<div class="row-btns"><button class="btn" id="mkBackup">Create backup code</button><button class="btn" id="cpBackup" hidden>Copy code</button><span class="msg" id="bkMsg" aria-live="polite"></span></div>'+
+    '<textarea id="bkOut" readonly hidden aria-label="Your backup code"></textarea>'+
+    '<label for="bkIn" class="msg">Paste a backup code to restore:</label><textarea id="bkIn" placeholder="GTA6:…"></textarea>'+
+    '<div class="row-btns"><button class="btn" id="restore">Restore</button><span id="rsConfirm" hidden><button class="btn primary small" id="rsYes">Replace my progress</button> <button class="btn small" id="rsNo">Cancel</button></span><span class="msg" id="rsMsg" aria-live="polite"></span></div></div>'+
+    '<div class="backup"><h3>Reset</h3><div class="row-btns"><button class="btn" id="reset">Reset all progress</button><span id="resetConfirm" hidden><button class="btn primary small" id="resetYes">Yes, clear everything</button> <button class="btn small" id="resetNo">Cancel</button></span></div></div>';
+}
+function encode(){
+  var p={v:2,d:Object.keys(state.done),n:state.notes,t:Object.keys(state.trophies),c:state.col};
+  return "GTA6:"+btoa(unescape(encodeURIComponent(JSON.stringify(p))));
+}
+function decode(code){
+  code=String(code).trim().replace(/\s+/g,"");if(code.indexOf("GTA6:")===0)code=code.slice(5);
+  var p=JSON.parse(decodeURIComponent(escape(atob(code))));
+  if(!p||!Array.isArray(p.d))throw new Error("bad");
+  var s={done:{},notes:p.n||{},trophies:{},col:{}};
+  p.d.forEach(function(k){s.done[k]=1;});(p.t||[]).forEach(function(k){s.trophies[k]=1;});
+  Object.keys(p.c||{}).forEach(function(k){var v=parseInt(p.c[k],10);if(v>0)s.col[k]=v;});
+  return normalize(s);
+}
+var pendingRestore=null;
+
+// ---------- RENDER + SAVE ----------
+function renderAll(){renderTabs();renderBars();renderControls();renderWarnings();renderList();renderExtras();renderSettings();setStatus(statusText);}
+function setStatus(t){statusText=t;$("status").textContent=t;}
 function buildDoc(){
   var json=JSON.stringify(state).replace(/</g,"\\u003c");
   var head='<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body>';
-  var statics=["title",'meta[name="claude:viewport-fit-sides"]','link[rel="stylesheet"]',"style:not([data-x])"].map(function(sel){
-    var els=document.querySelectorAll(sel);return Array.prototype.map.call(els,function(e){return e.closest("head")?"":e.outerHTML;}).join("");}).join("\n");
-  return head+statics+'\n<div id="app"></div>\n<script type="application/json" id="state">'+json+'<\/script>\n<script id="main">'+document.getElementById("main").textContent+'<\/script></body></html>';
+  var statics=["title",'meta[name="claude:viewport-fit-sides"]','link[rel="stylesheet"]',"style"].map(function(sel){
+    return Array.prototype.map.call(document.querySelectorAll(sel),function(e){return e.closest("head")?"":e.outerHTML;}).join("");}).join("\n");
+  return head+statics+'\n<div id="app"></div>\n<script type="application/json" id="state">'+json+'<\/script>\n<script id="main">'+$("main").textContent+'<\/script></body></html>';
 }
 function persist(){
-  try{localStorage.setItem(LS,JSON.stringify(state));}catch(e){}
-  if(!self){setStatus("Saved in this browser");return;}
+  lsSet(LS,state);
+  if(!pub){setStatus("Saved in this browser");return;}
   setStatus("Saving…");
   clearTimeout(pubTimer);
   pubTimer=setTimeout(function(){
-    self.publish(buildDoc()).then(function(){setStatus("Saved");}).catch(function(e){
+    pub.publish(buildDoc()).then(function(){setStatus("Saved");}).catch(function(e){
       var c=e&&e.code;
       if(c==="conflict")setStatus("Updated elsewhere, reloading");
-      else if(c==="not_granted"||c==="not_writer"){self=null;setStatus("View only · ticks saved in this browser");}
+      else if(c==="not_granted"||c==="not_writer"){pub=null;setStatus("View only · saved in this browser");}
       else setStatus("Couldn't save to the page · kept in this browser");
     });
   },1800);
 }
+function changed(){renderBars();renderWarnings();renderList();if(ui.tab==="extras")renderExtras();persist();}
 
-list.addEventListener("change",function(e){
-  var id=e.target.dataset&&e.target.dataset.id;if(!id)return;
-  if(e.target.checked)state.done[id]=1;else delete state.done[id];
-  var li=e.target.closest("li");if(li)li.classList.toggle("is-done",e.target.checked);
-  if(ui.hideDone)render();else{
-    var sec=e.target.closest("section"),c=CH.filter(function(x){return x.id===sec.querySelector(".chap-head").dataset.c;})[0];
-    var d=c.ms.filter(function(m){return state.done[m.id];}).length;
-    sec.querySelector(".chap-count").firstChild.textContent=d+"/"+c.ms.length+" ";
-    sec.querySelector(".mini span").style.width=(d/c.ms.length*100)+"%";
-    bars();
-  }
-  persist();
+// ---------- EVENTS ----------
+document.addEventListener("change",function(e){
+  var t=e.target,d=t.dataset||{};
+  if(d.id){if(t.checked)state.done[d.id]=1;else delete state.done[d.id];changed();}
+  else if(d.tr){if(t.checked)state.trophies[d.tr]=1;else delete state.trophies[d.tr];renderBars();renderExtras();persist();}
+  else if(d.col){var it=null;COL.forEach(function(g){g.items.forEach(function(x){if(x[0]===d.col)it=x;});});
+    var v=Math.max(0,Math.min(it[2],parseInt(t.value,10)||0));if(v)state.col[d.col]=v;else delete state.col[d.col];renderBars();renderExtras();persist();}
+  else if(d.set){set[d.set]=t.checked;saveSet();if(d.set==="spoilers"){peek={};peekCh={};peekTr={};}renderAll();}
+  else if(t.id==="hideDone"){ui.hideDone=t.checked;saveUI();renderList();}
 });
-list.addEventListener("click",function(e){
-  var h=e.target.closest(".chap-head");if(!h)return;
-  var id=h.dataset.c;ui.closed[id]=!ui.closed[id];saveUI();
-  h.closest("section").classList.toggle("closed",!!ui.closed[id]);h.setAttribute("aria-expanded",!ui.closed[id]);
+document.addEventListener("input",function(e){if(e.target.id==="q"){ui.q=norm(e.target.value).trim();renderList();}});
+document.addEventListener("click",function(e){
+  var b=e.target.closest("button");if(!b)return;var d=b.dataset;
+  if(b.id==="setBtn"){ui.settingsOpen=!ui.settingsOpen;renderSettings();if(ui.settingsOpen)$("settings").scrollIntoView({block:"nearest",behavior:"smooth"});return;}
+  if(d.tab){ui.tab=d.tab;saveUI();renderTabs();renderBars();renderExtras();return;}
+  if(d.f){ui.filter=d.f;saveUI();renderControls();renderList();return;}
+  if(d.w){ui.who=d.w;saveUI();renderControls();renderList();return;}
+  if(d.c){ui.closed[d.c]=!ui.closed[d.c];saveUI();b.closest("section").classList.toggle("closed",!!ui.closed[d.c]);b.setAttribute("aria-expanded",!ui.closed[d.c]);return;}
+  if(d.peek){peek[d.peek]=1;renderList();renderWarnings();return;}
+  if(d.peekch){peekCh[d.peekch]=1;renderList();renderWarnings();return;}
+  if(d.peektr){peekTr[d.peektr]=1;renderExtras();return;}
+  if(d.note){ui.editing=ui.editing===d.note?null:d.note;renderList();var ta=$("ed-"+d.note);if(ta)ta.focus();return;}
+  if(d.cancel){ui.editing=null;renderList();return;}
+  if(d.save){var v=$("ed-"+d.save).value.trim();if(v)state.notes[d.save]=v;else delete state.notes[d.save];ui.editing=null;renderList();persist();return;}
+  if(d.del){delete state.notes[d.del];ui.editing=null;renderList();persist();return;}
+  if(d.step){var it=null;COL.forEach(function(g){g.items.forEach(function(x){if(x[0]===d.step)it=x;});});
+    var v2=Math.max(0,Math.min(it[2],(state.col[d.step]||0)+parseInt(d.d,10)));if(v2)state.col[d.step]=v2;else delete state.col[d.step];
+    renderBars();renderExtras();persist();var inp=$("n-"+d.step);if(inp)inp.closest(".stepper").querySelector('[data-d="'+d.d+'"]').focus();return;}
+  if(d.jump){var m=BYID[d.jump];ui.closed[m.ch]=false;ui.filter="all";ui.who="all";ui.hideDone=false;ui.q="";renderControls();renderList();
+    var r=$("row-"+d.jump);if(r){r.scrollIntoView({block:"center",behavior:"smooth"});r.classList.add("flash");setTimeout(function(){r.classList.remove("flash");},1700);}return;}
+  if(b.id==="mkBackup"){var o=$("bkOut");o.value=encode();o.hidden=false;$("cpBackup").hidden=false;o.select();$("bkMsg").textContent="Code created.";return;}
+  if(b.id==="cpBackup"){var out=$("bkOut");
+    try{navigator.clipboard.writeText(out.value).then(function(){$("bkMsg").textContent="Copied to clipboard.";},function(){out.select();$("bkMsg").textContent="Code selected. Press Ctrl+C (or Cmd+C) to copy.";});}
+    catch(err){out.select();$("bkMsg").textContent="Code selected. Press Ctrl+C (or Cmd+C) to copy.";}return;}
+  if(b.id==="restore"){var msg=$("rsMsg");msg.className="msg";
+    try{pendingRestore=decode($("bkIn").value);}catch(err){pendingRestore=null;msg.className="msg err";msg.textContent="That code isn't valid. Check you copied all of it.";return;}
+    var n=Object.keys(pendingRestore.done).length;msg.textContent="Backup has "+n+" mission"+(n===1?"":"s")+" ticked.";$("rsConfirm").hidden=false;return;}
+  if(b.id==="rsYes"){state=pendingRestore||state;pendingRestore=null;peek={};peekCh={};peekTr={};$("rsConfirm").hidden=true;$("bkIn").value="";renderAll();$("rsMsg").textContent="Progress restored.";persist();return;}
+  if(b.id==="rsNo"){pendingRestore=null;$("rsConfirm").hidden=true;$("rsMsg").textContent="";return;}
+  if(b.id==="reset"){$("resetConfirm").hidden=false;return;}
+  if(b.id==="resetNo"){$("resetConfirm").hidden=true;return;}
+  if(b.id==="resetYes"){state=blank();peek={};peekCh={};peekTr={};ui.editing=null;renderAll();persist();return;}
 });
-document.querySelectorAll(".seg button").forEach(function(b){b.addEventListener("click",function(){ui.filter=b.dataset.f;saveUI();render();});});
-document.getElementById("hideDone").addEventListener("change",function(e){ui.hideDone=e.target.checked;saveUI();render();});
-document.getElementById("q").addEventListener("input",function(e){ui.q=norm(e.target.value).trim();render();});
-var rc=document.getElementById("resetConfirm");
-document.getElementById("reset").addEventListener("click",function(){rc.hidden=false;});
-document.getElementById("resetNo").addEventListener("click",function(){rc.hidden=true;});
-document.getElementById("resetYes").addEventListener("click",function(){rc.hidden=true;state.done={};render();persist();});
 
-// Embedded state is the record; if this view can't publish, fall back to this browser's copy.
-render();
-setStatus("Connecting…");
+// ---------- START ----------
+// In Claude the page itself is the record; elsewhere (or view-only) progress lives in this browser.
 function loadLocal(){
-  try{var l=JSON.parse(localStorage.getItem(LS)||"null");if(l&&l.done&&!Object.keys(state.done).length){state=l;render();}}catch(e){}
-  setStatus(Object.keys(state.done).length?"Saved in this browser":"Tick a mission to start");
+  if(!hasProgress(state)){var l=lsGet(LS);if(l){state=normalize(l);renderAll();}}
+  setStatus(hasProgress(state)?"Saved in this browser":"Tick a mission to start");
 }
+renderAll();
 if(window.claude&&window.claude.use){
+  setStatus("Connecting…");
   window.claude.use("artifact").then(function(a){
-    self=a;
-    if(!a)loadLocal();
-    else setStatus(Object.keys(state.done).length?"Saved":"Tick a mission to start");
+    pub=a;
+    if(!a)loadLocal();else setStatus(hasProgress(state)?"Saved":"Tick a mission to start");
   }).catch(loadLocal);
-} else loadLocal();
+}else loadLocal();
 })();
 </script>
 
