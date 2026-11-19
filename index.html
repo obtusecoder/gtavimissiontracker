@@ -235,6 +235,7 @@ function normalize(s){
   // v1 used positional ids like "c3-12"; move them to name-based ids
   Object.keys(o.done).forEach(function(k){if(LEGACY[k]){o.done[LEGACY[k]]=1;delete o.done[k];}});
   Object.keys(o.notes).forEach(function(k){if(LEGACY[k]){o.notes[LEGACY[k]]=o.notes[k];delete o.notes[k];}});
+  Object.keys(o.trophies).forEach(function(k){if(LEGACY[k]){o.trophies[LEGACY[k]]=1;delete o.trophies[k];}});
   return o;
 }
 function hasProgress(s){return Object.keys(s.done).length||Object.keys(s.notes).length||Object.keys(s.trophies).length||Object.keys(s.col).some(function(k){return s.col[k]>0;});}
