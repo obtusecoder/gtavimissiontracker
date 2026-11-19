@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>GTA VI Mission Tracker</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: a single scrolling run-sheet — sticky progress header, then chapter "reels" of mission rows */
+:root{
+  --bg:#f6f2f4; --surface:#ffffff; --ink:#1d1a22; --muted:#6c6474; --line:#e4dbe2;
+  --pink:#e0357a; --sun:#f08a3c; --teal:#0f8f8a; --done:#9a93a0; --track:#ece4ea;
+  --display:"Anton","Impact","Arial Narrow",sans-serif;
+  --body:"Barlow",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#141019; --surface:#1e1825; --ink:#f3edf5; --muted:#a79cb0; --line:#2f2638;
+  --pink:#ff5c9b; --sun:#ffa25c; --teal:#3cc7bf; --done:#6d6375; --track:#2b2333; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141019; --surface:#1e1825; --ink:#f3edf5; --muted:#a79cb0; --line:#2f2638;
+  --pink:#ff5c9b; --sun:#ffa25c; --teal:#3cc7bf; --done:#6d6375; --track:#2b2333; color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.4}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.wrap{max-width:820px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+header .wrap{padding-block:16px 14px;display:grid;gap:12px}
+.top{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(28px,6vw,40px);letter-spacing:.01em;line-height:1;margin:0;text-transform:uppercase}
+h1 span{background:linear-gradient(90deg,var(--sun),var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent}
+.status{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.bars{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:520px){.bars{grid-template-columns:1fr}}
+.bar-label{display:flex;justify-content:space-between;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600;margin-bottom:5px}
+.bar-label b{font-family:var(--mono);color:var(--ink);font-weight:500;letter-spacing:0;font-variant-numeric:tabular-nums}
+.track{height:12px;background:var(--track);border-radius:6px;overflow:hidden}
+.fill{height:100%;width:0;border-radius:6px;background:linear-gradient(90deg,var(--sun),var(--pink));transition:width .35s ease}
+.fill.teal{background:var(--teal)}
+.controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{font:inherit;font-size:13px;font-weight:600;padding:6px 11px;border:0;background:transparent;color:var(--muted);cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--surface)}
+.controls label{font-size:13px;color:var(--muted);display:flex;gap:6px;align-items:center;cursor:pointer}
+input[type=search]{font:inherit;font-size:14px;padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);flex:1;min-width:140px}
+main .wrap{padding-block:18px 48px;display:grid;gap:22px}
+section{display:grid;gap:8px}
+.chap-head{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;cursor:pointer;user-select:none;border:0;background:none;color:inherit;font:inherit;text-align:left;padding:0}
+.chap-no{font-family:var(--display);font-size:30px;line-height:1;color:var(--pink);min-width:2ch}
+.chap-title{min-width:0}
+.chap-title h2{font-family:var(--display);font-weight:400;font-size:21px;letter-spacing:.02em;text-transform:uppercase;margin:0;line-height:1.1;text-wrap:balance}
+.chap-title .mini{margin-top:6px;height:5px;background:var(--track);border-radius:3px;overflow:hidden}
+.chap-title .mini div{height:100%;background:var(--pink);transition:width .35s ease}
+.chap-count{font-family:var(--mono);font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;display:flex;gap:8px;align-items:center}
+.caret{transition:transform .2s}
+section.closed .caret{transform:rotate(-90deg)}
+section.closed ul{display:none}
+ul{list-style:none;margin:0;padding:0;background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+li{border-top:1px solid var(--line)}
+li:first-child{border-top:0}
+li label{display:grid;grid-template-columns:22px 1fr auto;gap:12px;align-items:center;padding:10px 14px;cursor:pointer}
+li label:hover{background:var(--bg)}
+input[type=checkbox]{appearance:none;width:20px;height:20px;border:2px solid var(--muted);border-radius:5px;margin:0;display:grid;place-items:center;cursor:pointer;background:transparent}
+input[type=checkbox]:checked{background:var(--pink);border-color:var(--pink)}
+input[type=checkbox]:checked::after{content:"";width:5px;height:10px;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:translateY(-1px) rotate(45deg)}
+input:focus-visible,button:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.m-name{font-weight:600;min-width:0}
+.m-note{display:block;font-weight:400;font-size:13px;color:var(--muted)}
+li.is-done .m-name{color:var(--done);text-decoration:line-through;text-decoration-thickness:1.5px}
+.tags{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
+.tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:2px 7px;border-radius:4px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.tag.opt{color:var(--teal);border-color:var(--teal)}
+.tag.miss{color:var(--sun);border-color:var(--sun)}
+.tag.sf{color:var(--pink);border-color:var(--pink)}
+main .wrap.notewrap{padding-block:16px 0}
+.note{border:1px solid var(--sun);border-left-width:4px;border-radius:8px;padding:10px 14px;font-size:14px;line-height:1.45;background:var(--surface)}
+.note b{color:var(--sun)}
+.note .checked{display:block;margin-top:4px;font-family:var(--mono);font-size:12px;color:var(--muted)}
+.empty{padding:14px;color:var(--muted);font-size:14px}
+footer{font-size:12px;color:var(--muted);text-align:center}
+.reset{font:inherit;font-size:12px;background:none;border:1px solid var(--line);color:var(--muted);border-radius:6px;padding:4px 10px;cursor:pointer}
+@media (max-width:520px){li label{grid-template-columns:22px 1fr}.tags{grid-column:2;justify-content:flex-start}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+<div id="app"></div>
+<script type="application/json" id="state">{"done":{}}</script>
+<script id="main">
+(function(){
+// [name, note, kind, who]  kind: m=story, o=optional, x=optional+missable, s=Strangers & Freaks
+var CH=[
+{id:"p",no:"P",title:"Prologue",ms:[["Prologue","Lucia in Leonida Penitentiary","m","Lucia"]]},
+{id:"c1",no:"1",title:"Just Like Paradise",ms:[
+["Gone Fishing","","m","Jason"],["Gear Up","Pick up another gun","m","Jason"],["Lab Fees","Collect Brian's rent","m","Jason"],["Just a Scratch","Fix your car","m","Jason"],["Unwanted Attention","Go see Cal","m","Jason"],["Pipework","Collect Mandy's rent","m","Jason"],["Get Shirley's Rum","Chapter 1 only","x","Jason"],["Steal the Scooter","Chapter 1 only","x","Jason"],["Hey Arnold!","Meet Brian","m","Jason"],["Island Dreams","Work for Kenton","m","Jason"],["Feng Shui","Meet Cal","m","Jason"],["Pick Up & Drop Off Groceries","","o","Jason"],["Buy Flowers","","o","Jason"],["Buy Lucia a Necklace","","o","Jason"],["Get The Chop","","o","Jason"],["Get Lucia's Clothes","","o","Jason"],["Coming Home","Lucia's release","m","Lucia"],["Clean Up After Donnie","Donnie's drop","m","Jason"],["Buck Me","Set up bank account","m","Both"],["Down to Earth","Meet Brian · accept Lucia's meditation afterwards (trophy)","m","Jason"],["Deposit Cash Into BuckMe","","m","Jason"],["Save for the Future","","m","Jason"],["Find the Lost Drugs","","o","Jason"],["Day Release","Meet Mattia & Kat","m","Both"],["Clock Out","","o","Jason"],["Clear Skies","Join Donnie on a job","m","Jason"],["Building a Life","","m","Both"],["Swamped","Meet Brian","m","Jason"],["Don Gone","Head to Donnie's trailer","m","Jason"],["Donnie's Lost Drugs","","m","Jason"],["Recalibration","Talk to Lucia","m","Jason"],["Tourist Trap","Take up Mattia's offer","m","Both"],["Home Sweet Home","","m","Both"],["Discharge Time","","m","Lucia"]]},
+{id:"c2",no:"2",title:"Paradise Lost",ms:[
+["What's in the Bag?","","m",""],["Take Care of Jason","Play nurse","m","Lucia"],["Overnight Charges","See Linda, the manager","m",""],["Just Moved In","","m",""],["Girl's Trip","Find painkillers","m","Lucia"],["Pick Up A Gun","","o",""],["Moses","Take a vehicle to Moses","m","Jason"],["New Look","","m",""],["How Do I Look?","","m",""],["Painkiller Supplier","","m",""],["Ambulance Chaser","Move the ambulance","m",""],["Check Out McKittrick Farm","Kyle 1/3","s",""],["Behind on Payments","","m",""],["Slam Dunk","Find painkillers","m",""],["Collect Chemicals for Kyle","Kyle 2/3","s",""],["Daily Driver","Steal the crawler for Moses","m","Jason"],["Breakfast Run","Check on Jason","m",""],["Coffee Break","","m",""],["Thrillbillies","Billy 1 · check out the Mud Club","s",""],["Twist Wrist, Smash, Grab","Billy 2 · join Billy on a job","s",""],["Hit Avery Pawn","","o",""],["Hit Kingpin Bowling","Trophy: Let's Go Bowling","o",""],["Impounded Vehicle","","o",""],["Prepare for Vice City","","m",""],["Veteran Hunted","Bret 1 · meet Bret","s","Jason"],["Afternoon Delight","Rob Vicki's boss","m",""],["Checking Out","Move to Vice City","m","Both"]]},
+{id:"c3",no:"3",title:"Tits Ass Drug Money",ms:[
+["Welcome to Vice City","","m","Both"],["Dealer's Choice","Go see Dre'Quan","m","Jason"],["Dubious Provenance","Visit the antique store","m",""],["Mami Knows Best","Catch up with Mia","m","Lucia"],["Get Your Wheels","","o",""],["Join a Street Race","Yago 1","s",""],["Here, Kitty Kitty","Speak with Tyrone","m","Jason"],["Send Money to Lorena","","m",""],["Encrypted Hard Drive","","m",""],["Boobie Time","Talk to Boobie","m","Jason"],["Buddy?","Kyle 3/3 · check on Kyle","s",""],["Meet the Heders","Meet Brian & Lori","m",""],["Yasmani's Jewelry Jobs","Richardson Jewelry, Donovan Banks & Co, Casa de Empeño, sell to Yasmani","m",""],["Bumper to Bumper","Yago 2 · mentor Yago","s","Jason"],["Car Service","Steal the car for Raul","m","Lucia"],["Send More Money to Lorena","","m",""],["Top Billing","Watch the Real Dimez","m",""],["First Impressions","Meeting with Raul","m",""],["Crosstown Traffic","Meet Raul (Lucia) / Karim (Jason)","m",""],["Credit Check","Meet Raul's crew","m",""],["Clonin' Keys, Makin' GS","Steal the Zorrusso for Randy","m",""],["Ride Or Die","Meet Dre'Quan","m","Jason"],["Raul's Next Job","","m",""],["Race Against Yago","Yago 3 · time-sensitive","x",""],["Sinfrontera National Bank","Cartel Heist · scope out the bank","m",""],["Security Expert","Cartel Heist","m",""],["Caught Slipping","","m",""],["Heist Planning","Cartel Heist","m",""],["Company Property","Cartel Heist · meet Brian","m",""],["Safe Word","Cartel Heist · steal the practice safe","m",""],["The Missing Link","Cartel Heist · meet Andrea","m","Lucia"],["Mall Rats","Billy 3 · join Billy on a job · solo","s",""],["Brother to Brother","Yago 4 · back up Yago","s","Jason"],["Cooties","Shoot the music video","m",""],["Hidden Charges","Cartel Heist · prep the explosives","m",""],["Bricked Up","Return to the apartment","m",""],["South Leonida Real Estate","Meet Mia","m","Lucia"],["The Cartel Heist","Trophy: Break the Bank","m","Both"]]},
+{id:"c4",no:"4",title:"Vice City, Baby",ms:[
+["Ocean Beach","","m",""],["Another Life","","m",""],["Pool Day","","m",""],["Company Cars","Speak to the concierge","m",""],["Lawyer Up","Meet Abe Gonzalez","m",""],["It's A Date!","","m",""],["Party Hard","Work personal security","m",""],["Pay Abe's Fee","","m",""],["Photo/Shoot","Shoot a promo","m",""],["Bad Driver!","Find Felipe","o",""],["Attend Eddie Acosta's Party","Solo only","s",""],["Making Gainz","VCIA Takedown · Raul's plan","m","Lucia"],["Blood Sweat and Gear","VCIA Takedown · work out","m","Lucia"],["Too Much Baggage","VCIA Takedown · scope out the airport","m","Jason"],["Watch It","Meet Dre'Quan","m","Jason"],["Amateur Hour","VCIA Takedown · workout","m","Lucia"],["Call Nate","VCIA Takedown","m","Lucia"],["Cash Injections","VCIA Takedown · hang out with Nate","m","Lucia"],["Dirty Work","VCIA Takedown · deal with Raina","m",""],["Nate Will Be in Touch","VCIA Takedown · help Kordell's crew","m",""],["Adventures in Babysitting","Work security for Andrés","m","Jason"],["Rafa's Kidnapping","","m","Jason"],["Fresh Evidence","Meet Dre'Quan","m","Jason"],["Child's Play","Rescue Rafa","m",""],["This is a Free Call From…","Pick up Shayna","x","Lucia"],["Power Play","VCIA Takedown · help Kordell's crew","m","Lucia"],["Close Surveillance","VCIA Takedown · spy on the bodybuilders","m","Jason"],["Delivery Method","VCIA Takedown · help Andrea","m","Jason"],["Team Building","VCIA Takedown · meet Kordell","m","Lucia"],["Fully Catered","VCIA Takedown · steal a catering truck","m",""],["Heist Plans in Place","VCIA Takedown","m",""],["Headliners","Help with the launch party","m",""],["VCIA Takedown","Start the airport heist","m",""],["Tie Up Loose Ends","","m",""],["That's Where The Money Is…","Wait at the café","o",""],["Call Valentina Back","","m",""],["Sunset","Stop by the front desk","m",""],["Starting From Zero","","m",""]]},
+{id:"c5",no:"5",title:"Top of the World, Ma",ms:[
+["Bird in the Hand","","m",""],["Taking Liberties","","m",""],["Doggie Bag","Meet Vinny","m",""],["VC Baby","Talk to Mattia","m",""],["Operation Savage Glory","","m",""],["Honest Abe","Negotiate a deal with Abe","m",""],["Unfinished Business","","m",""],["Pay Abe's Fee","","m",""],["Protective Custody","Meet with Abe","m",""],["The End of the Road","Final mission","m",""]]},
+{id:"sf",no:"S",title:"Strangers & Freaks · more side missions",ms:[
+["Search for the Skunk Ape","Kirk · night only","s",""],["Search for Tree Effigies","Kirk","s",""],["Help Kirk Find Mr. Mangrove","Kirk · night only","s","Lucia"],["Steal Vehicles for Moses","Moses","s",""],["Bret's Hunting Decks","Bret · trophy: Fair Game","s","Jason"],["The Impaler","Billy","s",""],["Hometown Heroes","Billy · trophy: The Lone Rider","s",""],["Climbing the Cellerichain (Parts 1–3)","Andy","s","Lucia"],["Pay the Cellerica Fee","Andy","s","Lucia"],["Peach!","Andy","s","Lucia"],["Read the Label","Andy","s","Lucia"],["Puff Puff Pass","Andy · trophy: Road to Rehabilitation","s","Lucia"],["Yasmani's ATM Jobs","Yasmani","s",""],["Yasmani's Payday Loans Jobs","Yasmani","s",""],["Tail the Security Van","Yasmani","s",""],["Randy's Wish List","Randy · trophy: Supply & Demand","s",""],["Take Out Kitty Litter","Tyrone","s",""],["Spin On This","Tyrone · trophy: Spin On This!","s",""],["Dunk's Robbery Tips","Dunk","s",""],["The Last Mile: Passing the Torch","Pilot Pete","s","Jason"],["The Last Mile: Backseat Pilot","Pilot Pete","s","Jason"],["Pete's Deliveries: Southpoint Airfield","Pilot Pete","s","Jason"],["Pete's Deliveries: Avery Allen & Co.","Pilot Pete","s","Jason"],["Deliver Packages","Pilot Pete","s","Jason"]]}
+];
+CH.forEach(function(c){c.ms=c.ms.map(function(m,i){return{id:c.id+"-"+(i+1),name:m[0],note:m[1],kind:m[2],who:m[3]};});});
+
+var state={done:{}};
+try{var s=JSON.parse(document.getElementById("state").textContent);if(s&&s.done)state=s;}catch(e){}
+var LS="gta6-tracker-v1";
+var ui={filter:"all",hideDone:false,q:"",closed:{}};
+try{var u=JSON.parse(localStorage.getItem(LS+"-ui")||"null");if(u){ui.filter=u.filter||"all";ui.hideDone=!!u.hideDone;ui.closed=u.closed||{};}}catch(e){}
+var self=null, pubTimer=null, statusText="Saved locally";
+
+function saveUI(){try{localStorage.setItem(LS+"-ui",JSON.stringify({filter:ui.filter,hideDone:ui.hideDone,closed:ui.closed}));}catch(e){}}
+function esc(t){return String(t).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+
+var app=document.getElementById("app");
+app.innerHTML=
+'<header><div class="wrap">'+
+ '<div class="top"><h1>GTA VI <span>Missions</span></h1><div class="status" id="status" aria-live="polite"></div></div>'+
+ '<div class="bars">'+
+  '<div><div class="bar-label">Story missions <b id="storyTxt"></b></div><div class="track" role="progressbar" aria-label="Story progress" id="storyBar"><div class="fill" id="storyFill"></div></div></div>'+
+  '<div><div class="bar-label">Everything <b id="allTxt"></b></div><div class="track" role="progressbar" aria-label="Overall progress" id="allBar"><div class="fill teal" id="allFill"></div></div></div>'+
+ '</div>'+
+ '<div class="controls">'+
+  '<div class="seg" role="group" aria-label="Show"><button data-f="all">All</button><button data-f="story">Story</button><button data-f="side">Side</button></div>'+
+  '<label><input type="checkbox" id="hideDone"> Hide completed</label>'+
+  '<input type="search" id="q" placeholder="Search missions">'+
+ '</div>'+
+'</div></header>'+
+'<main><div class="wrap notewrap"><div class="note" role="note"><b>Heads up:</b> this list was put together from community guides published in GTA VI\'s launch week, so it may not be 100% accurate. Guides disagree on which small objectives count as missions, some missions can appear in a different order, and side missions are still being discovered. The list is checked against the latest guides weekly. <span class="checked">Last checked: 19 Nov 2026</span></div></div><div class="wrap" id="list"></div><div class="wrap"><footer><p>Story order from launch-week guides; a few side missions may appear in a different order in your game.</p><button class="reset" id="reset">Reset all progress</button> <span id="resetConfirm" hidden><button class="reset" id="resetYes">Yes, clear every tick</button> <button class="reset" id="resetNo">Cancel</button></span></footer></div></main>';
+
+var list=document.getElementById("list");
+function isStory(m){return m.kind==="m";}
+function visible(m){
+  if(ui.filter==="story"&&!isStory(m))return false;
+  if(ui.filter==="side"&&isStory(m))return false;
+  if(ui.hideDone&&state.done[m.id])return false;
+  if(ui.q&&(m.name+" "+m.note).toLowerCase().indexOf(ui.q)<0)return false;
+  return true;
+}
+function tags(m){
+  var t="";
+  if(m.kind==="o")t+='<span class="tag opt">Optional</span>';
+  if(m.kind==="x")t+='<span class="tag opt">Optional</span><span class="tag miss">Missable</span>';
+  if(m.kind==="s")t+='<span class="tag sf">Side</span>';
+  if(m.who&&m.who!=="Both")t+='<span class="tag">'+m.who+'</span>';
+  return t;
+}
+function render(){
+  var html="";
+  CH.forEach(function(c){
+    var vis=c.ms.filter(visible);
+    if(!vis.length&&(ui.q||ui.hideDone||ui.filter!=="all"))return;
+    var d=c.ms.filter(function(m){return state.done[m.id];}).length, n=c.ms.length;
+    html+='<section class="'+(ui.closed[c.id]?"closed":"")+'"><button class="chap-head" data-c="'+c.id+'" aria-expanded="'+!ui.closed[c.id]+'">'+
+      '<span class="chap-no">'+c.no+'</span><span class="chap-title"><h2>'+esc(c.title)+'</h2><span class="mini" style="display:block"><div style="width:'+(n?d/n*100:0)+'%"></div></span></span>'+
+      '<span class="chap-count">'+d+'/'+n+' <span class="caret">▾</span></span></button><ul>';
+    if(!vis.length)html+='<li class="empty">Nothing to show here.</li>';
+    vis.forEach(function(m){
+      var on=!!state.done[m.id];
+      html+='<li class="'+(on?"is-done":"")+'"><label><input type="checkbox" id="m-'+m.id+'" data-id="'+m.id+'"'+(on?" checked":"")+'>'+
+        '<span class="m-name">'+esc(m.name)+(m.note?'<span class="m-note">'+esc(m.note)+'</span>':"")+'</span><span class="tags">'+tags(m)+'</span></label></li>';
+    });
+    html+='</ul></section>';
+  });
+  list.innerHTML=html||'<p class="empty">No missions match.</p>';
+  bars();
+}
+function bars(){
+  var all=0,ad=0,st=0,sd=0;
+  CH.forEach(function(c){c.ms.forEach(function(m){all++;if(state.done[m.id])ad++;if(isStory(m)){st++;if(state.done[m.id])sd++;}});});
+  function set(id,d,n){var p=n?Math.round(d/n*100):0;document.getElementById(id+"Fill").style.width=(n?d/n*100:0)+"%";document.getElementById(id+"Txt").textContent=d+"/"+n+" · "+p+"%";var b=document.getElementById(id+"Bar");b.setAttribute("aria-valuenow",p);b.setAttribute("aria-valuemin",0);b.setAttribute("aria-valuemax",100);}
+  set("story",sd,st);set("all",ad,all);
+  document.querySelectorAll(".seg button").forEach(function(b){b.setAttribute("aria-pressed",b.dataset.f===ui.filter);});
+  document.getElementById("hideDone").checked=ui.hideDone;
+  document.getElementById("status").textContent=statusText;
+}
+function setStatus(t){statusText=t;document.getElementById("status").textContent=t;}
+
+function buildDoc(){
+  var json=JSON.stringify(state).replace(/</g,"\\u003c");
+  var head='<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body>';
+    var els=document.querySelectorAll(sel);return Array.prototype.map.call(els,function(e){return e.closest("head")?"":e.outerHTML;}).join("");}).join("\n");
+  return head+statics+'\n<div id="app"></div>\n<script type="application/json" id="state">'+json+'<\/script>\n<script id="main">'+document.getElementById("main").textContent+'<\/script></body></html>';
+}
+function persist(){
+  try{localStorage.setItem(LS,JSON.stringify(state));}catch(e){}
+  if(!self){setStatus("Saved in this browser");return;}
+  setStatus("Saving…");
+  clearTimeout(pubTimer);
+  pubTimer=setTimeout(function(){
+    self.publish(buildDoc()).then(function(){setStatus("Saved");}).catch(function(e){
+      var c=e&&e.code;
+      if(c==="conflict")setStatus("Updated elsewhere, reloading");
+      else if(c==="not_granted"||c==="not_writer"){self=null;setStatus("View only · ticks saved in this browser");}
+      else setStatus("Couldn't save to the page · kept in this browser");
+    });
+  },1800);
+}
+
+list.addEventListener("change",function(e){
+  var id=e.target.dataset&&e.target.dataset.id;if(!id)return;
+  if(e.target.checked)state.done[id]=1;else delete state.done[id];
+  var li=e.target.closest("li");if(li)li.classList.toggle("is-done",e.target.checked);
+  if(ui.hideDone)render();else{
+    var sec=e.target.closest("section"),c=CH.filter(function(x){return x.id===sec.querySelector(".chap-head").dataset.c;})[0];
+    var d=c.ms.filter(function(m){return state.done[m.id];}).length;
+    sec.querySelector(".chap-count").firstChild.textContent=d+"/"+c.ms.length+" ";
+    sec.querySelector(".mini div").style.width=(d/c.ms.length*100)+"%";
+    bars();
+  }
+  persist();
+});
+list.addEventListener("click",function(e){
+  var h=e.target.closest(".chap-head");if(!h)return;
+  var id=h.dataset.c;ui.closed[id]=!ui.closed[id];saveUI();
+  h.parentNode.classList.toggle("closed",!!ui.closed[id]);h.setAttribute("aria-expanded",!ui.closed[id]);
+});
+document.querySelectorAll(".seg button").forEach(function(b){b.addEventListener("click",function(){ui.filter=b.dataset.f;saveUI();render();});});
+document.getElementById("hideDone").addEventListener("change",function(e){ui.hideDone=e.target.checked;saveUI();render();});
+document.getElementById("q").addEventListener("input",function(e){ui.q=e.target.value.trim().toLowerCase();render();});
+var rc=document.getElementById("resetConfirm");
+document.getElementById("reset").addEventListener("click",function(){rc.hidden=false;});
+document.getElementById("resetNo").addEventListener("click",function(){rc.hidden=true;});
+document.getElementById("resetYes").addEventListener("click",function(){rc.hidden=true;state.done={};render();persist();});
+
+// Embedded state is the record; if this view can't publish, fall back to this browser's copy.
+render();
+setStatus("Connecting…");
+if(window.claude&&window.claude.use){
+  window.claude.use("artifact").then(function(a){
+    self=a;
+    if(!a){
+      try{var l=JSON.parse(localStorage.getItem(LS)||"null");if(l&&l.done&&!Object.keys(state.done).length){state=l;render();}}catch(e){}
+      setStatus("Saved in this browser");
+    } else setStatus(Object.keys(state.done).length?"Saved":"Tick a mission to start");
+  }).catch(function(){setStatus("Saved in this browser");});
+} else setStatus("Saved in this browser");
+})();
+</script>
+
+</body>
+</html>
