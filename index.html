@@ -183,6 +183,7 @@ function setStatus(t){statusText=t;document.getElementById("status").textContent
 function buildDoc(){
   var json=JSON.stringify(state).replace(/</g,"\\u003c");
   var head='<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body>';
+  var statics=["title",'meta[name="claude:viewport-fit-sides"]','link[rel="stylesheet"]',"style:not([data-x])"].map(function(sel){
     var els=document.querySelectorAll(sel);return Array.prototype.map.call(els,function(e){return e.closest("head")?"":e.outerHTML;}).join("");}).join("\n");
   return head+statics+'\n<div id="app"></div>\n<script type="application/json" id="state">'+json+'<\/script>\n<script id="main">'+document.getElementById("main").textContent+'<\/script></body></html>';
 }
@@ -230,15 +231,17 @@ document.getElementById("resetYes").addEventListener("click",function(){rc.hidde
 // Embedded state is the record; if this view can't publish, fall back to this browser's copy.
 render();
 setStatus("Connecting…");
+function loadLocal(){
+  try{var l=JSON.parse(localStorage.getItem(LS)||"null");if(l&&l.done&&!Object.keys(state.done).length){state=l;render();}}catch(e){}
+  setStatus(Object.keys(state.done).length?"Saved in this browser":"Tick a mission to start");
+}
 if(window.claude&&window.claude.use){
   window.claude.use("artifact").then(function(a){
     self=a;
-    if(!a){
-      try{var l=JSON.parse(localStorage.getItem(LS)||"null");if(l&&l.done&&!Object.keys(state.done).length){state=l;render();}}catch(e){}
-      setStatus("Saved in this browser");
-    } else setStatus(Object.keys(state.done).length?"Saved":"Tick a mission to start");
-  }).catch(function(){setStatus("Saved in this browser");});
-} else setStatus("Saved in this browser");
+    if(!a)loadLocal();
+    else setStatus(Object.keys(state.done).length?"Saved":"Tick a mission to start");
+  }).catch(loadLocal);
+} else loadLocal();
 })();
 </script>
 
