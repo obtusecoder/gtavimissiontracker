@@ -30,3 +30,7 @@ Plain HTML, no build step. GitHub Pages serves `index.html` from the `main` bran
 - [GameTrek – All Collectibles Guide](https://gmtreks.com/gta6/page/01M7Q14Z47TMRMR101MF07KYYA)
 - [TechWiser – All GTA 6 Main and Strangers & Freaks Missions](https://techwiser.com/gta-6-missions/)
 - [Beebom – GTA 6 Missions List](https://beebom.com/gta-6-missions-list-walkthrough/)
+- [PowerPyx – GTA 6 Full Walkthrough (All Missions)](https://www.powerpyx.com/gta-6-full-walkthrough-all-missions/)
+- [PowerPyx – All Strangers & Freaks Side Missions](https://www.powerpyx.com/gta-6-all-strangers-freaks-side-missions/)
+- [GTABase – 100% Completion Checklist](https://gtabase.com/articles/gta-6/gta-6-100-completion-guide-interactive-checklist)
+- [Sixstash – GTA 6 Trophy Guide](https://sixstash.com/g/trophies)
