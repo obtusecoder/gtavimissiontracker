@@ -34,3 +34,5 @@ Plain HTML, no build step. GitHub Pages serves `index.html` from the `main` bran
 - [PowerPyx – All Strangers & Freaks Side Missions](https://www.powerpyx.com/gta-6-all-strangers-freaks-side-missions/)
 - [GTABase – 100% Completion Checklist](https://gtabase.com/articles/gta-6/gta-6-100-completion-guide-interactive-checklist)
 - [Sixstash – GTA 6 Trophy Guide](https://sixstash.com/g/trophies)
+
+  
